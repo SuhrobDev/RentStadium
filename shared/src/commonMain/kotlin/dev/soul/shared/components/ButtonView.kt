@@ -30,7 +30,7 @@ fun ButtonView(
     cornerRadius: Dp = Shapes.defaultCorner,
     containerColor: Color = MainGreenColor,
     textSize: TextUnit = FontSize.REGULAR,
-    textColor: Color = Color.Black,
+    textColor: Color = CustomThemeManager.colors.textColor,
     enabled: Boolean = true,
     isBordered: Boolean = false,
     borderColor: Color = ScreenBackgroundColorLight,
@@ -49,18 +49,19 @@ fun ButtonView(
         shape = RoundedCornerShape(cornerRadius),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
-            disabledContainerColor = CustomThemeManager.colors.lightGray,
+            disabledContainerColor = CustomThemeManager.colors.disabledButtonColor,
         ),
         border = if (!isBordered) null else BorderStroke(1.dp, borderColor),
         contentPadding = PaddingValues(0.dp)
     ) {
-
-        if (isLoading) {
+        if (isLoading)
             CircularProgressIndicator(
-                trackColor = Color.Black,
-                modifier = Modifier.size(28.dp)
+                trackColor = CustomThemeManager.colors.lightGray,
+                modifier = Modifier.size(28.dp),
+                strokeWidth = 3.dp,
+                color = Color.White,
             )
-        } else
+        else
             TextView(
                 text = text,
                 fontSize = textSize,
@@ -68,12 +69,4 @@ fun ButtonView(
                 fontWeight = FontWeight.Medium
             )
     }
-}
-
-//@Preview
-@Composable
-private fun ButtonViewPreview() {
-    ButtonView(
-        modifier = Modifier.fillMaxWidth()
-    )
 }

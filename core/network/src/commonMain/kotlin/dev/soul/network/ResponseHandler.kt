@@ -2,6 +2,8 @@ package dev.soul.network
 
 import dev.soul.datastore.datastore.DataStoreRepository
 import dev.soul.shared.utils.Logger
+import dev.soul.shared.utils.NetworkError
+import dev.soul.shared.utils.Resource
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.plugins.RedirectResponseException

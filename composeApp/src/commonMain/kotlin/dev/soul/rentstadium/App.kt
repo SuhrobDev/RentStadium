@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,7 +15,7 @@ import dev.soul.datastore.datastore.DataStoreRepository
 import dev.soul.datastore.datastore.PreferencesKeys
 import dev.soul.navigation.SetupNavGraph
 import dev.soul.shared.navigation.Screen
-import kotlinx.coroutines.flow.first
+import dev.soul.shared.utils.Logger
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -22,18 +23,10 @@ import org.koin.compose.koinInject
 @Preview
 fun App() {
     MaterialTheme {
-//        val customerRepository = koinInject<DataStoreRepository>()
         var appReady by remember { mutableStateOf(false) }
 
-        val isUserAuthenticated = remember { mutableStateOf(false) }
-        val startDestination = remember {
-            if (false) Screen.Base
-            else Screen.Login
-        }
 
         LaunchedEffect(Unit) {
-//            isUserAuthenticated.value =
-//                (customerRepository.getData(PreferencesKeys.REFRESH_TOKEN, "").first()).isNotEmpty()
 
 
             appReady = true
@@ -43,9 +36,7 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
             visible = appReady
         ) {
-            SetupNavGraph(
-                startDestination = startDestination
-            )
+            SetupNavGraph()
         }
     }
 }

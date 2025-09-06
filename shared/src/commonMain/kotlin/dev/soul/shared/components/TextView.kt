@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextLayoutResult
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -20,6 +21,7 @@ fun TextView(
     text: String,
     textColor: Color = CustomThemeManager.colors.textColor,
     fontWeight: FontWeight = FontWeight.Normal,
+    fontFamily: FontFamily = regularFont(),
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
     textDecoration: TextDecoration = TextDecoration.None,
@@ -35,7 +37,7 @@ fun TextView(
 ) {
     Text(
         text = text,
-        fontFamily = regularFont(),
+        fontFamily = fontFamily,
         fontWeight = fontWeight,
         fontSize = fontSize,
         color = textColor,

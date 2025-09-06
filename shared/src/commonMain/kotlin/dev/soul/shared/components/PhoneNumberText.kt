@@ -4,10 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.soul.shared.FontSize
 import dev.soul.shared.theme.CustomThemeManager
 
@@ -44,15 +41,10 @@ fun PhoneNumberTextField(
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(firstInitial) {
-
         if (firstInitial) {
             textFieldValue.copy(text = phone)
             firstInitial = false
         }
-
-//        Log.e("cxzpinqw", "PhoneNumberTextField: $phone")
-//        Log.e("cxzpinqw", "PhoneNumberTextField: ${textFieldValue.text}")
-
     }
 
     BasicTextField(
@@ -73,7 +65,8 @@ fun PhoneNumberTextField(
             }
         },
         textStyle = TextStyle(
-            color = CustomThemeManager.colors.textColor, fontSize = FontSize.REGULAR,
+            color = CustomThemeManager.colors.textColor,
+            fontSize = FontSize.EXTRA_REGULAR,
             fontWeight = FontWeight.Medium
         ),
         singleLine = true,
@@ -81,13 +74,13 @@ fun PhoneNumberTextField(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                CustomThemeManager.colors.lightGray, shape = RoundedCornerShape(12.dp)
+                CustomThemeManager.colors.lightGray,
+                shape = RoundedCornerShape(12.dp)
             )
             .border(
                 width = 1.dp,
-                color = if (isFocused) CustomThemeManager.colors.mainColor else CustomThemeManager.colors.mainColor.copy(
-                    alpha = 0.0f
-                ),
+                color = if (isFocused) CustomThemeManager.colors.mainColor
+                    else CustomThemeManager.colors.borderColor,
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(8.dp)
@@ -101,17 +94,23 @@ fun PhoneNumberTextField(
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
+                TextView(
+                    text = "+998  ",
+                    textColor = CustomThemeManager.colors.hintColor,
+                    fontSize = FontSize.EXTRA_REGULAR
+                )
+
                 if (isFocused) {
-                    Spacer(modifier = Modifier.width(8.dp))
                     Box(Modifier.weight(1f)) {
                         if (textFieldValue.text.isEmpty()) {
                             TextView(
                                 text = "12 345 67 89",
                                 textColor = CustomThemeManager.colors.hintColor,
-                                fontSize = 18.sp
+                                fontSize = FontSize.EXTRA_REGULAR
                             )
                         }
                         innerTextField()
@@ -121,13 +120,13 @@ fun PhoneNumberTextField(
                         TextView(
                             text = "12 345 67 89",
                             textColor = CustomThemeManager.colors.hintColor,
-                            fontSize = 18.sp
+                            fontSize = FontSize.EXTRA_REGULAR
                         )
                     } else {
                         TextView(
-                            text = "${phone.removePrefix("+998 ")}",
+                            text = phone.removePrefix("+998 "),
                             textColor = CustomThemeManager.colors.textColor,
-                            fontSize = 18.sp
+                            fontSize = FontSize.EXTRA_REGULAR
                         )
                     }
                 }

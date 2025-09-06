@@ -28,7 +28,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-            export(libs.kmp.notifier)
+//            export(libs.kmp.notifier)
         }
     }
     
@@ -73,7 +73,7 @@ kotlin {
 
             implementation(libs.koin.compose)
 
-            api(libs.kmp.notifier)
+//            api(libs.kmp.notifier)
 
 
             implementation(projects.shared)
@@ -83,9 +83,11 @@ kotlin {
             implementation(projects.core.network)
 
             implementation(projects.feature.auth)
+            implementation(projects.feature.base)
+            implementation(projects.feature.validation)
 
-            runtimeOnly(projects.data)
-            runtimeOnly(projects.domain)
+            implementation(projects.data)
+            implementation(projects.domain)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

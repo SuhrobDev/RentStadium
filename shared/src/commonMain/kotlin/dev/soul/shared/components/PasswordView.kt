@@ -33,7 +33,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import dev.soul.shared.FontSize
 import dev.soul.shared.Resources
 import dev.soul.shared.theme.CustomThemeManager
@@ -59,7 +58,7 @@ fun PasswordView(
         },
         textStyle = TextStyle(
             color = CustomThemeManager.colors.textColor,
-            fontSize = FontSize.REGULAR,
+            fontSize = FontSize.EXTRA_REGULAR,
             fontWeight = FontWeight.Medium
         ),
         singleLine = true,
@@ -71,9 +70,7 @@ fun PasswordView(
             )
             .border(
                 width = 1.dp,
-                color = if (isFocused) CustomThemeManager.colors.mainColor else CustomThemeManager.colors.mainColor.copy(
-                    alpha = 0.0f
-                ),
+                color = if (isFocused) CustomThemeManager.colors.mainColor else CustomThemeManager.colors.borderColor,
                 shape = RoundedCornerShape(12.dp)
             )
             .padding(8.dp)
@@ -96,7 +93,7 @@ fun PasswordView(
                         TextView(
                             text = "Введите пароль",
                             textColor = CustomThemeManager.colors.hintColor,
-                            fontSize = 18.sp
+                            fontSize = FontSize.EXTRA_REGULAR
                         )
                     }
                     innerTextField()
@@ -105,7 +102,7 @@ fun PasswordView(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Icon(
-                    painter = painterResource(if (passwordVisible) Resources.Icon.PasswordShow else Resources.Icon.PasswordShow),
+                    painter = painterResource(if (passwordVisible) Resources.Icon.PasswordShow else Resources.Icon.PasswordHide),
                     contentDescription = if (passwordVisible) "Hide password" else "Show password",
                     tint = CustomThemeManager.colors.hintColor,
                     modifier = Modifier

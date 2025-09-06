@@ -31,6 +31,8 @@ kotlin {
 
             api(libs.ktor.client.core)
 
+            implementation(libs.kotlinx.serialization)
+
             implementation(projects.shared)
             implementation(projects.domain)
             implementation(projects.core.network)

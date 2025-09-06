@@ -18,6 +18,7 @@ import dev.soul.shared.theme.color.CustomTheme
 
 private val CustomLightColorScheme = CustomColors(
     screenBackground = ScreenBackgroundColorLight,
+    baseScreenBackground = BaseScreenBackgroundColorLight,
     mainColor = MainGreenColor,
     blurGreen = BlurGreenColorLight,
     redBlur = RedBlurColorLight,
@@ -35,10 +36,12 @@ private val CustomLightColorScheme = CustomColors(
     blueColor = BlueColorLight,
     blurRedColor = BlurRedColorLight,
     blurBlueColor = BlurBlueColorLight,
+    disabledButtonColor = DisabledButtonColorLight,
 )
 
 private val CustomDarkColorScheme = CustomColors(
     screenBackground = ScreenBackgroundColorDark,
+    baseScreenBackground = BaseScreenBackgroundColorLight,
     mainColor = MainGreenColor,
     blurGreen = BlurGreenColorDark,
     redBlur = RedBlurColorDark,
@@ -56,21 +59,19 @@ private val CustomDarkColorScheme = CustomColors(
     blueColor = BlueColorDark,
     blurRedColor = BlurRedColorDark,
     blurBlueColor = BlurBlueColorDark,
+    disabledButtonColor = DisabledButtonColorLight
 )
 
 private val localProvider = staticCompositionLocalOf {
     CustomLightColorScheme
-    CustomDarkColorScheme
+    CustomLightColorScheme
 }
 
 @Composable
 private fun CustomLocalProvider(colors: CustomColors, content: @Composable () -> Unit) {
     val colorPalate = remember { colors.copy() }
-
     colorPalate.updateColors(colors)
-
     CompositionLocalProvider(localProvider provides colorPalate, content = content)
-
 }
 
 private val CustomTheme.colors: Pair<ColorScheme, CustomColors>
@@ -83,12 +84,12 @@ private val CustomTheme.colors: Pair<ColorScheme, CustomColors>
 
         CustomTheme.DARK -> Pair(
             darkColorScheme(),
-            CustomDarkColorScheme
+            CustomLightColorScheme
         )
 
         CustomTheme.SYSTEM -> {
             if (isSystemInDarkTheme()) {
-                Pair(darkColorScheme(), CustomDarkColorScheme)
+                Pair(darkColorScheme(), CustomLightColorScheme)
             } else {
                 Pair(lightColorScheme(), CustomLightColorScheme)
             }

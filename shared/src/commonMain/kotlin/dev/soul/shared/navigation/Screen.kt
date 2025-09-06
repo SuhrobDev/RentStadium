@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Screen {
     @Serializable
-    data object Entry : Screen()
+    data object Validation : Screen()
 
     @Serializable
     data object Login : Screen()
@@ -14,11 +14,13 @@ sealed class Screen {
     data object RegPhone : Screen()
 
     @Serializable
-    data object VerifyCode : Screen()
+    data class VerifyCode(val phone: String) : Screen()
 
     @Serializable
-    data object Register : Screen()
+    data class Register(val phone: String) : Screen()
 
     @Serializable
     data object Base : Screen()
+
+
 }

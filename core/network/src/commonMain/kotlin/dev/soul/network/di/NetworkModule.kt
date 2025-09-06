@@ -22,7 +22,7 @@ import org.koin.dsl.module
 
 private const val TAG = "NetworkModule"
 private const val base_url = "https://stadium.rent-home.uz/api/"
-private const val REQUEST_TIMEOUT_MILLIS = 1_500_000L
+private const val REQUEST_TIMEOUT_MILLIS = 30_000L
 
 /**
  * Provides network module configuration for dependency injection
@@ -39,25 +39,23 @@ fun provideNetworkModule() = module {
 private fun createHttpClient(userDataStore: DataStoreRepository): HttpClient {
 
     return createHttpClient().config {
-        expectSuccess = true
+        expectSuccess = false
 
         // Configure JSON serialization
         install(ContentNegotiation) {
             json(createJsonConfiguration())
         }
 
-        // Configure default request settings
         install(DefaultRequest) {
             val language = runBlocking {
                 userDataStore.getData(PreferencesKeys.LANGUAGE, "uz").first()
             }
-            val refreshToken = runBlocking {
-                userDataStore.getData(PreferencesKeys.REFRESH_TOKEN, "").first()
+            val accessToken = runBlocking {
+                userDataStore.getData(PreferencesKeys.ACCESS_TOKEN, "").first()
             }
-            configureDefaultRequest(language, refreshToken)
+            configureDefaultRequest(language, accessToken)
         }
 
-        // Configure timeout settings
         install(HttpTimeout) {
             requestTimeoutMillis = REQUEST_TIMEOUT_MILLIS
             socketTimeoutMillis = REQUEST_TIMEOUT_MILLIS
@@ -91,10 +89,7 @@ private fun DefaultRequest.DefaultRequestBuilder.configureDefaultRequest(
     token: String
 ) {
     header("Accept-Language", language)
-
-    if (token.isNotEmpty())
-        header("Authorization", "Bearer $token")
-
+    header("Authorization", "Bearer $token")
     contentType(ContentType.Application.Json)
     accept(ContentType.Application.Json)
     url(base_url)

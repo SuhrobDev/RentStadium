@@ -6,4 +6,8 @@ object HttpRoutes {
     const val VERIFY_OTP = "auth/register/validate-otp/"
     const val REGISTER = "auth/register/"
 
+    const val PROFILE = "auth/user/profile/"
+    const val REFRESH_TOKEN = "auth/token/refresh/"
+    const val STADIUM_LIST = "/stadium/list/"
+
 }

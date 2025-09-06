@@ -2,6 +2,6 @@ package dev.soul.di
 
 import org.koin.dsl.module
 
-actual val targetModule = module {
+actual fun targetModule() = module {
 //    single<PhotoPicker> { PhotoPicker() }
 }

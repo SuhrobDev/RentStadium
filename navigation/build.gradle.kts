@@ -42,9 +42,12 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
-            implementation(project(path = ":shared"))
-            implementation(project(path = ":feature:auth"))
+            implementation(projects.shared)
+            implementation(projects.feature.auth)
+            implementation(projects.feature.base)
+            implementation(projects.feature.validation)
 //            implementation(project(path = ":feature:details"))
 //            implementation(project(path = ":feature:home"))
 //            implementation(project(path = ":feature:profile"))

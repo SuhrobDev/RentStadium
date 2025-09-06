@@ -9,8 +9,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.mmk.kmpnotifier.notification.NotifierManager
-import com.mmk.kmpnotifier.notification.configuration.NotificationPlatformConfiguration
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,12 +19,12 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
         )
 
-        NotifierManager.initialize(
-            configuration = NotificationPlatformConfiguration.Android(
-                notificationIconResId = R.drawable.ic_launcher_foreground,
-                showPushNotification = true,
-            )
-        )
+//        NotifierManager.initialize(
+//            configuration = NotificationPlatformConfiguration.Android(
+//                notificationIconResId = R.drawable.ic_launcher_foreground,
+//                showPushNotification = true,
+//            )
+//        )
 
         super.onCreate(savedInstanceState)
         setContent {

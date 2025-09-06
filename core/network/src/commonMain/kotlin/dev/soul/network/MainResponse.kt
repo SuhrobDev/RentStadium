@@ -8,7 +8,19 @@ data class MainResponse<T>(
     val error: String? = null,
     val data: T? = null,
     val message: String? = null,
+
+    val detail: String? = null,
+    val code: String? = null,
+    val messages:List<Messages>? = emptyList(),
 )
+
+@Serializable
+data class Messages(
+    val token_class: String? = null,
+    val token_type: String? = null,
+    val message: String? = null,
+)
+
 
 //@Serializable
 //data class ResponseData<T>(

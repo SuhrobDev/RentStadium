@@ -19,18 +19,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
-interface DispatchersProvider {
-    val main: CoroutineDispatcher
+interface Dispatcher {
     val io: CoroutineDispatcher
-    val default: CoroutineDispatcher
-    val databaseRead: CoroutineDispatcher
-    val databaseWrite: CoroutineDispatcher
 }
 
-class DefaultDispatchersProvider : DispatchersProvider {
-    override val main = Dispatchers.Main
-    override val io = Dispatchers.IO
-    override val default = Dispatchers.Default
-    override val databaseRead = Dispatchers.IO.limitedParallelism(4)
-    override val databaseWrite = Dispatchers.IO.limitedParallelism(1)
-}
+expect fun provideDispatcher(): Dispatcher

@@ -22,20 +22,20 @@ fun PhoneNumberInput(
     onPhoneChange: (String) -> Unit
 ) {
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Row(
-            modifier = Modifier
-                .background(
-                    CustomThemeManager.colors.lightGray, shape = RoundedCornerShape(12.dp)
-                )
-                .padding(vertical = 16.dp, horizontal = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            TextView(text = "+998", fontSize = FontSize.REGULAR, textColor = Color(0xFFA09CAB))
-        }
+//        Row(
+//            modifier = Modifier
+//                .background(
+//                    CustomThemeManager.colors.lightGray, shape = RoundedCornerShape(12.dp)
+//                )
+//                .padding(vertical = 16.dp, horizontal = 10.dp),
+//            verticalAlignment = Alignment.CenterVertically,
+//            horizontalArrangement = Arrangement.spacedBy(4.dp)
+//        ) {
+//            TextView(text = "+998", fontSize = FontSize.REGULAR, textColor = Color(0xFFA09CAB))
+//        }
 
         PhoneNumberTextField(phone = phone, enabled = enabled) {
-            onPhoneChange(it)
+            onPhoneChange("+998$it")
         }
 
 

@@ -1,11 +1,22 @@
 package dev.soul.data.di
 
-import dev.soul.data.repository.AuthRepositoryImpl
-import dev.soul.domain.repository.AuthRepository
+import dev.soul.data.repository.auth.AuthRepositoryImpl
+import dev.soul.data.repository.UserRepositoryImpl
+import dev.soul.data.repository.user.SearchRepositoryImpl
+import dev.soul.domain.repository.auth.AuthRepository
+import dev.soul.domain.repository.UserRepository
+import dev.soul.domain.repository.user.SearchRepository
+import dev.soul.shared.utils.provideDispatcher
 import org.koin.dsl.module
 
-val repositoryModule = module {
+fun repositoryModule() = module {
     single<AuthRepository> {
-        AuthRepositoryImpl(get(), get(), get())
+        AuthRepositoryImpl(get(), get(), provideDispatcher())
+    }
+    single<UserRepository> {
+        UserRepositoryImpl(get(), get(), provideDispatcher())
+    }
+    single<SearchRepository> {
+        SearchRepositoryImpl(get(), get(), provideDispatcher())
     }
 }

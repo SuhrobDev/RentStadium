@@ -33,6 +33,11 @@ include(":di")
 include(":domain")
 
 include(":feature:auth")
+include(":feature:base")
+include(":feature:validation")
+include(":feature:user:home")
+include(":feature:user:search")
+
 include(":navigation")
 include(":core:network")
 include(":composeApp")

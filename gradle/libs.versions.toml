@@ -40,7 +40,7 @@ compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-co
 
 auth-kmp = { module = "io.github.mirzemehdi:kmpauth-google", version.ref = "auth" }
 #auth-firebase-kmp = { module = "io.github.mirzemehdi:kmpauth-firebase", version.ref = "auth" }
-kmp-notifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "notifier" }
+#kmp-notifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "notifier" }
 
 #firebase-app = { module = "dev.gitlive:firebase-app", version.ref = "firebase" }
 #firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebase" }

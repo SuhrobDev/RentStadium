@@ -1,17 +1,33 @@
 package dev.soul.navigation
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dev.soul.auth.login.LoginRoot
+import androidx.navigation.toRoute
+import dev.soul.auth.login.LoginViewModel
+import dev.soul.auth.login.ui.LoginRoot
+import dev.soul.auth.otp.VerifyIntent
+import dev.soul.auth.otp.VerifyViewModel
+import dev.soul.auth.otp.ui.OtpRoot
+import dev.soul.auth.register_info.RegisterEvent
+import dev.soul.auth.register_info.RegisterViewModel
+import dev.soul.auth.register_info.ui.RegisterInfoRoot
+import dev.soul.auth.register_phone.RegisterPhoneViewModel
+import dev.soul.auth.register_phone.ui.RegisterPhoneRoot
+import dev.soul.base.ui.BaseGraphRoot
 import dev.soul.shared.navigation.Screen
+import dev.soul.validation.ValidationViewModel
+import dev.soul.validation.ui.ValidationRoot
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SetupNavGraph(startDestination: Screen = Screen.Login) {
+fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
     val navController = rememberNavController()
 
     NavHost(
@@ -25,8 +41,24 @@ fun SetupNavGraph(startDestination: Screen = Screen.Login) {
             )
         }
     ) {
+        composable<Screen.Validation> {
+            val viewModel: ValidationViewModel = koinViewModel<ValidationViewModel>()
+            ValidationRoot(viewModel = viewModel, onNavigate = {
+                navController.navigate(it) {
+                    popUpTo<Screen.Validation> { inclusive = true }
+                }
+            })
+        }
+
+        composable<Screen.Base> {
+            BaseGraphRoot()
+        }
+
         composable<Screen.Login> {
+            val viewModel: LoginViewModel = koinViewModel<LoginViewModel>()
+
             LoginRoot(
+                viewModel = viewModel,
                 onNavigateHome = {
                     navController.navigate(Screen.Base) {
                         popUpTo<Screen.Login> { inclusive = true }
@@ -37,97 +69,58 @@ fun SetupNavGraph(startDestination: Screen = Screen.Login) {
                 }
             )
         }
-//        composable<Screen.HomeGraph> {
-//            HomeGraphScreen(
-//                navigateToAuth = {
-//                    navController.navigate(Screen.Auth) {
-//                        popUpTo<Screen.HomeGraph> { inclusive = true }
-//                    }
-//                },
-//                navigateToProfile = {
-//                    navController.navigate(Screen.Profile)
-//                },
-//                navigateToAdminPanel = {
-//                    navController.navigate(Screen.AdminPanel)
-//                },
-//                navigateToDetails = { productId ->
-//                    navController.navigate(Screen.Details(id = productId))
-//                },
-//                navigateToCategorySearch = { categoryName ->
-//                    navController.navigate(Screen.CategorySearch(categoryName))
-//                },
-//                navigateToCheckout = { totalAmount ->
-//                    navController.navigate(Screen.Checkout(totalAmount))
-//                }
-//            )
-//        }
-//        composable<Screen.Profile> {
-//            ProfileScreen(
-//                navigateBack = {
-//                    navController.navigateUp()
-//                }
-//            )
-//        }
-//        composable<Screen.AdminPanel> {
-//            AdminPanelScreen(
-//                navigateBack = {
-//                    navController.navigateUp()
-//                },
-//                navigateToManageProduct = { id ->
-//                    navController.navigate(Screen.ManageProduct(id = id))
-//                }
-//            )
-//        }
-//        composable<Screen.ManageProduct> {
-//            val id = it.toRoute<Screen.ManageProduct>().id
-//            ManageProductScreen(
-//                id = id,
-//                navigateBack = {
-//                    navController.navigateUp()
-//                }
-//            )
-//        }
-//        composable<Screen.Details> {
-//            DetailsScreen(
-//                navigateBack = {
-//                    navController.navigateUp()
-//                }
-//            )
-//        }
-//        composable<Screen.CategorySearch> {
-//            val category = ProductCategory.valueOf(it.toRoute<Screen.CategorySearch>().category)
-//            CategorySearchScreen(
-//                category = category,
-//                navigateToDetails = { id ->
-//                    navController.navigate(Screen.Details(id))
-//                },
-//                navigateBack = {
-//                    navController.navigateUp()
-//                }
-//            )
-//        }
-//        composable<Screen.Checkout> {
-//            val totalAmount = it.toRoute<Screen.Checkout>().totalAmount
-//            CheckoutScreen(
-//                totalAmount = totalAmount.toDoubleOrNull() ?: 0.0,
-//                navigateBack = {
-//                    navController.navigateUp()
-//                },
-//                navigateToPaymentCompleted = { isSuccess, error ->
-//                    navController.navigate(Screen.PaymentCompleted(isSuccess, error))
-//                }
-//            )
-//        }
-//        composable<Screen.PaymentCompleted> {
-//            PaymentCompleted(
-//                navigateBack = {
-//                    navController.navigate(Screen.HomeGraph) {
-//                        launchSingleTop = true
-//                        // Clear backstack completely
-//                        popUpTo(0) { inclusive = true }
-//                    }
-//                }
-//            )
-//        }
+
+        composable<Screen.RegPhone> {
+            val viewModel: RegisterPhoneViewModel = koinViewModel<RegisterPhoneViewModel>()
+
+            RegisterPhoneRoot(
+                viewModel = viewModel,
+                onBack = {
+                    navController.navigateUp()
+                },
+                onNavigateOtp = {
+                    navController.navigate(Screen.VerifyCode(it))
+                }
+            )
+        }
+
+        composable<Screen.VerifyCode> {
+            val viewModel: VerifyViewModel = koinViewModel<VerifyViewModel>()
+            val params = it.toRoute<Screen.VerifyCode>()
+
+            LaunchedEffect(Unit) {
+                viewModel.onAction(VerifyIntent.OnGetOtp(params.phone))
+            }
+
+            OtpRoot(
+                viewModel = viewModel,
+                onBack = {
+                    navController.navigateUp()
+                },
+                onNavigateRegister = {
+                    navController.navigate(Screen.Register(it))
+                }
+            )
+        }
+
+        composable<Screen.Register> {
+            val viewModel: RegisterViewModel = koinViewModel<RegisterViewModel>()
+
+            val param = it.toRoute<Screen.Register>()
+
+            LaunchedEffect(Unit) {
+                viewModel.onEvent(RegisterEvent.PhoneChanged(param.phone))
+            }
+
+            RegisterInfoRoot(
+                viewModel = viewModel,
+                onBack = {
+                    navController.navigateUp()
+                },
+                onNavigateHome = {
+                    navController.navigate(Screen.Base)
+                }
+            )
+        }
     }
 }

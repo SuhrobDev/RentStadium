@@ -36,8 +36,6 @@ kotlin {
         }
         commonMain.dependencies {
 
-            implementation(project(path = ":shared"))
-
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -51,6 +49,7 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
             implementation(libs.multiplatform.settings)
             implementation(libs.multiplatform.settings.no.arg)
@@ -62,6 +61,9 @@ kotlin {
             implementation(libs.coil3.network.ktor)
 
             implementation(libs.messagebar.kmp)
+
+            implementation(projects.domain)
+            implementation(projects.shared)
 
         }
     }

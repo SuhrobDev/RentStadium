@@ -50,7 +50,7 @@ fun NameView(
         },
         textStyle = TextStyle(
             color = CustomThemeManager.colors.textColor,
-            fontSize = FontSize.REGULAR,
+            fontSize = FontSize.EXTRA_REGULAR,
             fontWeight = FontWeight.Medium
         ),
         singleLine = true,
@@ -86,7 +86,7 @@ fun NameView(
                         TextView(
                             text = "Имя Фамилия",
                             textColor = CustomThemeManager.colors.hintColor,
-                            fontSize = 18.sp
+                            fontSize = FontSize.EXTRA_REGULAR
                         )
                     }
                     innerTextField()

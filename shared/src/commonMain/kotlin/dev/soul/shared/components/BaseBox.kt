@@ -10,6 +10,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import dev.soul.shared.theme.CustomThemeManager
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -20,13 +21,14 @@ fun BaseBox(
     withToolBar: Boolean = true,
     toolBarTitle: String = "",
     isLoading: Boolean = false,
+    backgroundColor: Color = CustomThemeManager.colors.baseScreenBackground,
     content: @Composable BoxScope.() -> Unit
 ) {
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(CustomThemeManager.colors.screenBackground)
+            .background(backgroundColor)
     ) {
 
         Box(

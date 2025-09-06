@@ -16,12 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.soul.auth.component.CustomPagerIndicator
 import dev.soul.auth.component.EntryImagePlaceHolder
 import dev.soul.auth.component.EntryInfo
 import dev.soul.shared.Resources
 import dev.soul.shared.components.BaseBox
 import dev.soul.shared.components.ButtonView
+import dev.soul.shared.components.CustomPagerIndicator
 import dev.soul.shared.theme.CustomThemeManager
 import kotlinx.coroutines.launch
 

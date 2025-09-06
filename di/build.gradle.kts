@@ -26,13 +26,22 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
 
             implementation(projects.core.datastore)
             implementation(projects.core.network)
 
             implementation(projects.data)
+            implementation(projects.domain)
             implementation(projects.shared)
+
+            implementation(projects.feature.auth)
+            implementation(projects.feature.base)
+            implementation(projects.feature.validation)
+            implementation(projects.feature.user.home)
+            implementation(projects.feature.user.search)
         }
     }
 }

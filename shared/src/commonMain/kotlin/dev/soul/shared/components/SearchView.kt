@@ -25,6 +25,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -41,11 +43,12 @@ fun SearchView(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    isFocused: Boolean,
+    onFocused: (Boolean) -> Unit
 ) {
 
     var textFieldValue by remember { mutableStateOf(TextFieldValue(value)) }
-    var isFocused by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
 
     BasicTextField(
@@ -76,7 +79,7 @@ fun SearchView(
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .focusRequester(focusRequester)
             .onFocusChanged {
-                isFocused = it.isFocused
+                onFocused(it.isFocused)
             },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text),
         enabled = enabled,
@@ -111,13 +114,4 @@ fun SearchView(
                 Spacer(modifier = Modifier.width(8.dp))
             }
         })
-}
-
-//@Preview
-@Composable
-private fun PreviewSearch() {
-    SearchView(
-        value = "",
-        onValueChange = {}
-    )
 }

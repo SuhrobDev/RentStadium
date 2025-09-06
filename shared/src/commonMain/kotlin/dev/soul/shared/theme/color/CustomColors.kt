@@ -12,9 +12,11 @@ import androidx.compose.ui.graphics.Color
 @Immutable
 class CustomColors(
     screenBackground: Color,
+    baseScreenBackground: Color,
     mainColor: Color,
     blurGreen: Color,
     textColor: Color,
+    disabledButtonColor: Color,
     cardBackground: Color,
     selectedItem: Color,
     unselectedItem: Color,
@@ -33,6 +35,9 @@ class CustomColors(
     var screenBackground by mutableStateOf(screenBackground)
         private set
 
+    var baseScreenBackground by mutableStateOf(baseScreenBackground)
+        private set
+
     var mainColor by mutableStateOf(mainColor)
         private set
 
@@ -40,6 +45,9 @@ class CustomColors(
         private set
 
     var textColor by mutableStateOf(textColor)
+        private set
+
+    var disabledButtonColor by mutableStateOf(disabledButtonColor)
         private set
 
     var cardBackground by mutableStateOf(cardBackground)
@@ -96,6 +104,8 @@ class CustomColors(
 
         textColor = colors.textColor
 
+        disabledButtonColor = colors.disabledButtonColor
+
         cardBackground = colors.cardBackground
 
         selectedItem = colors.selectedItem
@@ -128,9 +138,11 @@ class CustomColors(
 
     fun copy() = CustomColors(
         screenBackground = screenBackground,
+        baseScreenBackground = baseScreenBackground,
         mainColor = mainColor,
         blurGreen = blurGreen,
         textColor = textColor,
+        disabledButtonColor = disabledButtonColor,
         cardBackground = cardBackground,
         selectedItem = selectedItem,
         unselectedItem = unselectedItem,
@@ -144,6 +156,6 @@ class CustomColors(
         blueColor = blueColor,
         blurBlueColor = blurBlueColor,
         redColor = redColor,
-        blurRedColor = blurRedColor
+        blurRedColor = blurRedColor,
     )
 }

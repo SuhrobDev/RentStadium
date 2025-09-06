@@ -11,8 +11,10 @@ import rentstadium.shared.generated.resources.ic_arrow_right
 import rentstadium.shared.generated.resources.ic_attendees
 import rentstadium.shared.generated.resources.ic_ball
 import rentstadium.shared.generated.resources.ic_distance
+import rentstadium.shared.generated.resources.ic_empty_heart
 import rentstadium.shared.generated.resources.ic_favourite
 import rentstadium.shared.generated.resources.ic_hidden_password
+import rentstadium.shared.generated.resources.ic_likes
 import rentstadium.shared.generated.resources.ic_location
 import rentstadium.shared.generated.resources.ic_map
 import rentstadium.shared.generated.resources.ic_menu_home
@@ -28,7 +30,12 @@ import rentstadium.shared.generated.resources.ic_ticket
 import rentstadium.shared.generated.resources.ic_time
 import rentstadium.shared.generated.resources.ic_warning
 import rentstadium.shared.generated.resources.ic_x
+import rentstadium.shared.generated.resources.img_closed_stadium
 import rentstadium.shared.generated.resources.img_empty_schedule
+import rentstadium.shared.generated.resources.img_location
+import rentstadium.shared.generated.resources.img_saved
+import rentstadium.shared.generated.resources.img_stadium
+import rentstadium.shared.generated.resources.img_stadium_type
 
 object Resources {
     object Icon {
@@ -58,11 +65,18 @@ object Resources {
         val X = Res.drawable.ic_x
         val PasswordShow =Res.drawable.ic_shown_password
         val PasswordHide =Res.drawable.ic_hidden_password
+        val EmptyHeart = Res.drawable.ic_empty_heart
+        val Likes = Res.drawable.ic_likes
     }
 
     object Image {
         val Clothes = Res.drawable.clothes
         val EmptySchedule = Res.drawable.img_empty_schedule
+        val Location = Res.drawable.img_location
+        val Stadium = Res.drawable.img_stadium
+        val Saved = Res.drawable.img_saved
+        val ClosedStadium = Res.drawable.img_closed_stadium
+        val StadiumType = Res.drawable.img_stadium_type
     }
 //    object Flag {
 //        val India = Res.drawable.india

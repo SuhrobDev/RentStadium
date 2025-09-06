@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import kotlinx.atomicfu.locks.SynchronizedObject
 import kotlinx.atomicfu.locks.synchronized
 import okio.Path.Companion.toPath
+import org.koin.core.module.Module
 
 private lateinit var dataStore: DataStore<Preferences>
 
@@ -22,3 +23,4 @@ fun getDataStore(producePath: () -> String): DataStore<Preferences> =
     }
 
 internal const val dataStoreFileName = "rent_stadion.preferences_pb"
+

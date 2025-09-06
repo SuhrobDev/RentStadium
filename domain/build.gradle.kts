@@ -27,6 +27,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
             implementation(projects.core.network)
+            implementation(projects.shared)
         }
     }
 }
