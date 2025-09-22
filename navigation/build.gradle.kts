@@ -48,14 +48,7 @@ kotlin {
             implementation(projects.feature.auth)
             implementation(projects.feature.base)
             implementation(projects.feature.validation)
-//            implementation(project(path = ":feature:details"))
-//            implementation(project(path = ":feature:home"))
-//            implementation(project(path = ":feature:profile"))
-//            implementation(project(path = ":feature:admin_panel"))
-//            implementation(project(path = ":feature:admin_panel:manage_product"))
-//            implementation(project(path = ":feature:home:categories:category_search"))
-//            implementation(project(path = ":feature:home:cart:checkout"))
-//            implementation(project(path = ":feature:payment_completed"))
+            implementation(projects.feature.user.search)
         }
     }
 }

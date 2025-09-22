@@ -22,5 +22,17 @@ sealed class Screen {
     @Serializable
     data object Base : Screen()
 
+    @Serializable
+    data object Notification : Screen()
+
+    @Serializable
+    data object MapSearch : Screen()
+
+    @Serializable
+    data object ByStadium : Screen()
+
+    @Serializable
+    data object BySaved : Screen()
+
 
 }

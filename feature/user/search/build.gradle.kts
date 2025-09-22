@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -15,6 +16,8 @@ kotlin {
         }
     }
 
+    val xcf = XCFramework()
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -23,19 +26,32 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "search"
             isStatic = true
+            xcf.add(this) // 👈 add framework to XCFramework
         }
     }
 
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+
             implementation(libs.ktor.android.client)
+            implementation(libs.androidx.google.maps)
         }
+
         iosMain.dependencies {
             implementation(libs.ktor.darwin.client)
-        }
-        commonMain.dependencies {
 
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
+        }
+
+        commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -65,6 +81,7 @@ kotlin {
             implementation(projects.domain)
             implementation(projects.shared)
 
+
         }
     }
 }
@@ -81,4 +98,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+dependencies{
+    implementation(compose.material3)
 }

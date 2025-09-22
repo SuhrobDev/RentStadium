@@ -6,14 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,10 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.soul.auth.login.LoginEvent
 import dev.soul.auth.login.LoginState
@@ -103,8 +98,6 @@ fun LoginRoot(
                 }
             )
         }
-
-
     }
 }
 
@@ -114,7 +107,9 @@ internal fun Content(
     state: LoginState,
     onEvent: (LoginEvent) -> Unit
 ) {
-    BaseBox(backgroundColor = CustomThemeManager.colors.screenBackground) {
+    BaseBox(
+        backgroundColor = CustomThemeManager.colors.screenBackground
+    ) {
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -137,29 +132,20 @@ internal fun Content(
                     textColor = CustomThemeManager.colors.textColor.copy(alpha = 0.6f)
                 )
 
-                TextField(
-                    value = state.phone,
-                    onValueChange = { onEvent(LoginEvent.PhoneChanged(it)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Phone") },
-                    singleLine = true,
-                    textStyle = TextStyle(
-                        color = Color.Black,
-                        fontSize = 16.sp
-                    )
-                )
+                PhoneNumberInput(
+                    phone = state.phone,
+                    modifier = Modifier.padding(top = 24.dp)
+                ) {
+                    onEvent(LoginEvent.PhoneChanged(it))
+                }
 
-//                PhoneNumberInput(phone = state.phone, modifier = Modifier.padding(top = 24.dp)) {
-//                    onEvent(LoginEvent.PhoneChanged(it))
-//                }
-//
-//                PasswordView(
-//                    password = state.password,
-//                    onPasswordChange = {
-//                        onEvent(LoginEvent.PasswordChanged(it))
-//                    },
-//                    modifier = Modifier.padding(top = 16.dp)
-//                )
+                PasswordView(
+                    password = state.password,
+                    onPasswordChange = {
+                        onEvent(LoginEvent.PasswordChanged(it))
+                    },
+                    modifier = Modifier.padding(top = 16.dp)
+                )
             }
 
             Column(
@@ -176,9 +162,11 @@ internal fun Content(
                     onEvent(LoginEvent.Login)
                 }
 
-                TextView(text = "Нет аккаунта? Зарегистрируйтесь", modifier = Modifier.clickable {
-                    onEvent(LoginEvent.Register)
-                })
+                TextView(
+                    text = "Нет аккаунта? Зарегистрируйтесь",
+                    modifier = Modifier.clickable {
+                        onEvent(LoginEvent.Register)
+                    })
             }
         }
     }

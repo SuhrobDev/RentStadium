@@ -1,8 +1,6 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -19,7 +17,9 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
+    val xcf = XCFramework()
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -28,30 +28,10 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
-//            export(libs.kmp.notifier)
+            xcf.add(this) // 👈 add framework to XCFramework
         }
     }
-    
-//    @OptIn(ExperimentalWasmDsl::class)
-//    wasmJs {
-//        outputModuleName.set("composeApp")
-//        browser {
-//            val rootDirPath = project.rootDir.path
-//            val projectDirPath = project.projectDir.path
-//            commonWebpackConfig {
-//                outputFileName = "composeApp.js"
-//                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
-//                    static = (static ?: mutableListOf()).apply {
-//                        // Serve sources to debug inside browser
-//                        add(rootDirPath)
-//                        add(projectDirPath)
-//                    }
-//                }
-//            }
-//        }
-//        binaries.executable()
-//    }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -73,24 +53,34 @@ kotlin {
 
             implementation(libs.koin.compose)
 
-//            api(libs.kmp.notifier)
+
+            implementation(projects.di)
+            implementation(projects.data)
+            implementation(projects.domain)
+            implementation(projects.core.datastore)
+            implementation(projects.core.network)
 
 
             implementation(projects.shared)
             implementation(projects.navigation)
-            implementation(projects.di)
-            implementation(projects.core.datastore)
-            implementation(projects.core.network)
+
 
             implementation(projects.feature.auth)
             implementation(projects.feature.base)
             implementation(projects.feature.validation)
-
-            implementation(projects.data)
-            implementation(projects.domain)
+            implementation(projects.feature.user.home)
+            implementation(projects.feature.user.search)
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+
+        iosMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.ui)
         }
     }
 }

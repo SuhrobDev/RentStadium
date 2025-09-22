@@ -179,7 +179,10 @@ private fun Content(
                         )
                     }
 
-                    TextView(text = "Нажав на кнопку Далее, вы соглашаетесь с Правила использования Sport foot ")
+                    TextView(
+                        text = "Нажав на кнопку Далее, вы соглашаетесь с Правила использования Sport foot",
+                        lineHeight = FontSize.EXTRA_REGULAR
+                    )
                 }
 
                 ButtonView(

@@ -19,16 +19,26 @@ import androidx.compose.ui.unit.sp
 import dev.soul.shared.FontSize
 import dev.soul.shared.components.TextView
 import dev.soul.shared.mediumFont
+import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun SearchOption(modifier: Modifier = Modifier, icon: DrawableResource, text: String) {
+fun SearchOption(
+    modifier: Modifier = Modifier,
+    onClick: (Screen) -> Unit,
+    icon: DrawableResource,
+    screen: Screen,
+    text: String
+) {
     Card(
         modifier = modifier.height(90.dp),
         colors = CardDefaults.cardColors(containerColor = CustomThemeManager.colors.screenBackground),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(16.dp),
+        onClick = {
+            onClick(screen)
+        }
     ) {
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp),

@@ -22,13 +22,18 @@ import androidx.navigation.compose.rememberNavController
 import dev.soul.base.components.BottomBar
 import dev.soul.search.SearchViewModel
 import dev.soul.search.ui.SearchRoot
+import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
 import dev.soul.shared.utils.TabScreens
 import dev.soul.user.home.ui.HomeRoot
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun BaseGraphRoot() {
+fun BaseGraphRoot(
+    modifier: Modifier = Modifier,
+    onNotification: () -> Unit,
+    onSearchOption: (Screen) -> Unit
+) {
 
     val navController = rememberNavController()
     val currentRoute by rememberUpdatedState(newValue = navController.currentBackStackEntryAsState().value?.destination?.route)
@@ -65,7 +70,7 @@ fun BaseGraphRoot() {
             composable<TabScreens.Search> {
                 val viewModel: SearchViewModel = koinViewModel<SearchViewModel>()
 
-                SearchRoot(viewModel = viewModel, onNotification = {})
+                SearchRoot(viewModel = viewModel, onNotification = onNotification, onSearchOption = onSearchOption)
             }
 
             composable<TabScreens.Shop> {
@@ -81,7 +86,6 @@ fun BaseGraphRoot() {
                     modifier = Modifier.fillMaxSize()
                         .background(CustomThemeManager.colors.borderColor)
                 )
-
             }
         }
         Box(

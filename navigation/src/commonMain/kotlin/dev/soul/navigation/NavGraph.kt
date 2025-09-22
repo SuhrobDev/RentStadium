@@ -1,6 +1,5 @@
 package dev.soul.navigation
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
@@ -21,6 +20,10 @@ import dev.soul.auth.register_info.ui.RegisterInfoRoot
 import dev.soul.auth.register_phone.RegisterPhoneViewModel
 import dev.soul.auth.register_phone.ui.RegisterPhoneRoot
 import dev.soul.base.ui.BaseGraphRoot
+import dev.soul.search.ui.map.MapSearchViewModel
+import dev.soul.search.ui.map.ui.MapSearchRoot
+import dev.soul.shared.components.BaseBox
+import dev.soul.shared.components.TextView
 import dev.soul.shared.navigation.Screen
 import dev.soul.validation.ValidationViewModel
 import dev.soul.validation.ui.ValidationRoot
@@ -51,7 +54,38 @@ fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
         }
 
         composable<Screen.Base> {
-            BaseGraphRoot()
+            BaseGraphRoot(
+                onNotification = {
+                    navController.navigate(Screen.Notification)
+                },
+                onSearchOption = {
+                    navController.navigate(it)
+                }
+            )
+        }
+
+        composable<Screen.MapSearch> {
+            val viewModel: MapSearchViewModel = koinViewModel<MapSearchViewModel>()
+            MapSearchRoot(
+                viewModel = viewModel,
+            )
+        }
+
+        composable<Screen.ByStadium> {
+            BaseBox {
+                TextView(text = "soon")
+            }
+        }
+        composable<Screen.BySaved> {
+            BaseBox {
+                TextView(text = "soon")
+            }
+        }
+
+        composable<Screen.Notification> {
+            BaseBox {
+                TextView(text = "soon")
+            }
         }
 
         composable<Screen.Login> {

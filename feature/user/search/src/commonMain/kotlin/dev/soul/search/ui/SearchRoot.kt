@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -30,15 +31,19 @@ import dev.soul.search.SearchState
 import dev.soul.search.SearchViewModel
 import dev.soul.search.components.CollapsingTopBar
 import dev.soul.search.components.SearchOptionsList
+import dev.soul.search.components.SearchResultItem
 import dev.soul.search.components.StadiumTypeList
 import dev.soul.shared.components.BaseBox
+import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
+import dev.soul.shared.utils.Logger
 
 @Composable
 fun SearchRoot(
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel,
-    onNotification: () -> Unit
+    onNotification: () -> Unit,
+    onSearchOption: (Screen) -> Unit
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -58,13 +63,14 @@ fun SearchRoot(
                         start = innerPadding.calculateStartPadding(layoutDirection),
                         end = innerPadding.calculateEndPadding(layoutDirection)
                     )
-                ),
+                )
         ) {
             Content(
                 lazyListState = lazyListState,
                 state = state,
                 onEvent = viewModel::onEvent,
-                onNotification = onNotification
+                onNotification = onNotification,
+                onOption = onSearchOption
             )
         }
     }
@@ -76,10 +82,12 @@ internal fun Content(
     lazyListState: LazyListState,
     state: SearchState,
     onEvent: (SearchEvent) -> Unit,
-    onNotification: () -> Unit
+    onNotification: () -> Unit,
+    onOption: (Screen) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val listState = rememberLazyListState()
 
     BaseBox(
         modifier = Modifier.clickable(
@@ -117,12 +125,12 @@ internal fun Content(
                 LazyColumn(
                     state = lazyListState,
                     modifier = Modifier.fillMaxSize(),
-                )
-                {
+                ) {
                     item {
                         SearchOptionsList(
                             options = state.options,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            onOptionClick = onOption
                         )
                     }
 
@@ -133,7 +141,23 @@ internal fun Content(
                         )
                     }
 
+                }
+            }
 
+            AnimatedVisibility(
+                state.isSearchFocused,
+                enter = expandVertically() + fadeIn(),
+                exit = shrinkVertically() + fadeOut()
+            ) {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
+                ) {
+                    items(state.searchResults, { it.id }) {
+                        SearchResultItem(it, {
+                            Logger.log("asdqwgds", "$it")
+                        })
+                    }
                 }
             }
 

@@ -1,6 +1,5 @@
 package dev.soul.shared.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -15,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import dev.soul.shared.FontSize
 import dev.soul.shared.Resources
 import dev.soul.shared.theme.CustomThemeManager
@@ -63,7 +61,6 @@ fun BaseToolbar(
             else {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     menu1?.let {
                         IconButton(onClick = {

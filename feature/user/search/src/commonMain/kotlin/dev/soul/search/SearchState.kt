@@ -1,6 +1,7 @@
 package dev.soul.search
 
 import androidx.compose.runtime.Immutable
+import dev.soul.domain.model.user.search.StadiumOptions
 import dev.soul.domain.model.user.search.response.StadiumItemModel
 import org.jetbrains.compose.resources.DrawableResource
 
@@ -17,7 +18,9 @@ data class SearchState(
     val error: String? = null,
     val currentPage: Int = 0,
     val totalPages: Int = 0,
-    val options: List<Pair<DrawableResource, String>> = emptyList(),
+    val options: List<StadiumOptions> = emptyList(),
     val types: List<Triple<DrawableResource, String, String>> = emptyList(),
     val stadiums: List<StadiumItemModel> = emptyList(),
+
+    val searchResults: List<StadiumItemModel> = emptyList(),
 )
