@@ -45,7 +45,7 @@ fun PagingImage(
             state = pagerState,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(175.dp)
+                .height(135.dp)
         ) { page ->
             Image(
                 painter = painterResource(imageList[page]),
@@ -55,12 +55,10 @@ fun PagingImage(
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
 
         CustomPagerIndicator(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 8.dp),
+                .align(Alignment.BottomCenter),
             pagerState = pagerState,
             pageCount = imageList.size,
             activeColor = Color.Green,

@@ -1,20 +1,15 @@
 package dev.soul.search.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +17,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -31,11 +29,32 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 import dev.soul.domain.model.user.search.maps.StadiumModel
 import dev.soul.search.ui.map.components.MapStadiumItem
-import dev.soul.shared.theme.CustomThemeManager
+import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 actual fun MapComponent(stadiums: List<StadiumModel>) {
     var selectedStadium by remember { mutableStateOf<StadiumModel?>(null) }
+
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val density = LocalDensity.current
+    val screenHeightPx = with(density) { screenHeight.toPx() }
+
+    var offsetY by remember { mutableStateOf(0f) }
+
+    // Animate the offset when released
+    val animatedOffset by animateFloatAsState(
+        targetValue = offsetY,
+        finishedListener = {
+            if (it >= screenHeightPx * 0.2f) { // if dragged far enough → dismiss
+                selectedStadium = null
+            } else {
+                offsetY = 0f // reset to visible
+            }
+        },
+        label = "dragOffset"
+    )
+
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -60,6 +79,7 @@ actual fun MapComponent(stadiums: List<StadiumModel>) {
                     title = stadium.name,
                     snippet = stadium.address,
                     onClick = {
+                        offsetY = 0f   // reset position
                         selectedStadium = stadium
                         false
                     }
@@ -71,8 +91,23 @@ actual fun MapComponent(stadiums: List<StadiumModel>) {
             AnimatedVisibility(
                 visible = true,
                 modifier = Modifier
+                    .offset { IntOffset(0, animatedOffset.roundToInt()) }
                     .align(Alignment.BottomCenter)
                     .padding(16.dp)
+                    .draggable(
+                        orientation = Orientation.Vertical,
+                        state = rememberDraggableState { delta ->
+                            offsetY = (offsetY + delta).coerceAtLeast(0f) // drag only downward
+                        },
+                        onDragStopped = {
+                            // decide after release whether to close or reset
+                            if (offsetY > screenHeightPx * 0.2f) {
+                                offsetY = screenHeightPx // animate out
+                            } else {
+                                offsetY = 0f // snap back
+                            }
+                        }
+                    )
             ) {
                 MapStadiumItem(stadium, onClose = { selectedStadium = null })
             }
