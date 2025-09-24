@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.soul.domain.model.user.search.maps.StadiumModel
 import dev.soul.domain.repository.user.SearchRepository
+import dev.soul.shared.navigation.Screen
 import dev.soul.shared.utils.UiEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -108,6 +109,28 @@ class MapSearchViewModel(
             is MapSearchEvent.Back -> {
                 viewModelScope.launch {
                     _uiEvent.send(UiEvent.NavigateUp)
+                }
+            }
+
+            is MapSearchEvent.StadiumSelected -> {
+                viewModelScope.launch {
+                    _uiEvent.send(
+                        UiEvent.Navigate(
+                            Screen.StadiumDetail(
+                                id = event.stadium.id,
+                                lat = event.stadium.lat,
+                                long = event.stadium.long,
+                                name = event.stadium.name,
+                                address = event.stadium.address,
+                                type = event.stadium.type,
+                                price = event.stadium.price,
+                                rate = event.stadium.rate,
+                                image = event.stadium.image,
+                                distance = event.stadium.distance,
+                                isFavorite = event.stadium.isFavorite
+                            )
+                        )
+                    )
                 }
             }
         }

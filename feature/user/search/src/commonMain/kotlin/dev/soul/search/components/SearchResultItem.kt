@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.soul.domain.model.user.search.maps.StadiumModel
 import dev.soul.domain.model.user.search.response.StadiumItemModel
 import dev.soul.shared.Resources
 import org.jetbrains.compose.resources.painterResource
@@ -38,9 +37,8 @@ fun SearchResultItem(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Stadium Image
         AsyncImage(
-            model = stadiumModel.images.first(),
+            model = stadiumModel.images.first().image,
             contentDescription = stadiumModel.name,
             modifier = Modifier
                 .size(56.dp)
@@ -50,7 +48,6 @@ fun SearchResultItem(
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // Name + Address
         Column(
             modifier = Modifier.weight(1f)
         ) {
@@ -61,6 +58,7 @@ fun SearchResultItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
+
             Text(
                 text = stadiumModel.address,
                 style = MaterialTheme.typography.bodySmall,
@@ -72,7 +70,6 @@ fun SearchResultItem(
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        // Right arrow
         Icon(
             painter = painterResource(Resources.Icon.RightArrow),
             contentDescription = "Go",

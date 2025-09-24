@@ -34,5 +34,20 @@ sealed class Screen {
     @Serializable
     data object BySaved : Screen()
 
+    @Serializable
+    data class StadiumDetail(
+        val id: String,
+        val lat: Double,
+        val long: Double,
+        val name: String,
+        val address: String,
+        val type: String,
+        val price: Double,
+        val rate: Double,
+        val image: String,
+        val distance: Double,
+        val isFavorite: Boolean,
+    ) : Screen()
+
 
 }

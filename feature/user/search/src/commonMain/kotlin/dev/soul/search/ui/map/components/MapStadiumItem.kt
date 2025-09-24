@@ -1,5 +1,8 @@
 package dev.soul.search.ui.map.components
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,80 +31,91 @@ import dev.soul.shared.components.TextView
 import dev.soul.shared.theme.CustomThemeManager
 import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun MapStadiumItem(stadium: StadiumModel, onClose: () -> Unit) {
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = CustomThemeManager.colors.screenBackground)
-    ) {
-        Column {
-            PagingImage(
-                modifier = Modifier.clip(RoundedCornerShape(16.dp)),
-                imageList = listOf(
-                    Resources.Icon.Entry1,
-                    Resources.Icon.Entry2,
-                    Resources.Icon.Entry3
-                ),
-                onSaved = {
-
-                }
-            )
-
-            Column(
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
-            ) {
-                TextView(text = stadium.name, fontSize = FontSize.EXTRA_MEDIUM)
-
-                Row {
-                    TextView(text = "${stadium.rate} ⭐")
-
-                    TextView(text = stadium.address)
-
-                    Spacer(modifier = Modifier.weight(1f))
-                    TextView(
-                        text = "${stadium.distance} km from you"
-                    )
-                }
-            }
-
-            Spacer(
-                Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(CustomThemeManager.colors.lightGray)
-                    .padding(vertical = 6.dp)
-            )
-
-            Button(
-                onClick = { onClose() },
-                modifier = Modifier.fillMaxWidth().height(48.dp),
-                shape = RoundedCornerShape(0.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = CustomThemeManager.colors.screenBackground
-                )
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        4.dp,
-                        Alignment.CenterHorizontally
+fun MapStadiumItem(
+    modifier: Modifier = Modifier,
+    stadium: StadiumModel, onClose: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope
+) {
+    with(sharedTransitionScope) {
+        Card(
+            modifier = modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            elevation = CardDefaults.cardElevation(8.dp),
+            colors = CardDefaults.cardColors(containerColor = CustomThemeManager.colors.screenBackground)
+        ) {
+            Column {
+                PagingImage(
+                    modifier = Modifier.clip(RoundedCornerShape(16.dp))
+                        .sharedElement(
+                            animatedVisibilityScope = animatedContentScope,
+                            sharedContentState = rememberSharedContentState(key = "image ${stadium.image}"),
+                        ),
+                    imageList = listOf(
+                        Resources.Icon.Entry1,
+                        Resources.Icon.Entry2,
+                        Resources.Icon.Entry3
                     ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        "Schedule",
-                        color = CustomThemeManager.colors.mainColor
-                    )
+                    onSaved = {
 
-                    Image(
-                        painter = painterResource(Resources.Icon.RightArrow),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(CustomThemeManager.colors.mainColor),
+                    }
+                )
+
+                Column(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)
+                ) {
+                    TextView(text = stadium.name, fontSize = FontSize.EXTRA_MEDIUM)
+
+                    Row {
+                        TextView(text = "${stadium.rate} ⭐")
+
+                        TextView(text = stadium.address)
+
+                        Spacer(modifier = Modifier.weight(1f))
+                        TextView(
+                            text = "${stadium.distance} km from you"
+                        )
+                    }
+                }
+
+                Spacer(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(CustomThemeManager.colors.lightGray)
+                        .padding(vertical = 6.dp)
+                )
+
+                Button(
+                    onClick = { onClose() },
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    shape = RoundedCornerShape(0.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = CustomThemeManager.colors.screenBackground
                     )
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            4.dp,
+                            Alignment.CenterHorizontally
+                        ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Schedule",
+                            color = CustomThemeManager.colors.mainColor
+                        )
+
+                        Image(
+                            painter = painterResource(Resources.Icon.RightArrow),
+                            contentDescription = null,
+                            colorFilter = ColorFilter.tint(CustomThemeManager.colors.mainColor),
+                        )
+                    }
                 }
             }
         }

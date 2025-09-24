@@ -1,5 +1,8 @@
 package dev.soul.search.ui.map.ui
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,8 +11,11 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -21,17 +27,40 @@ import dev.soul.search.ui.map.components.FilterSection
 import dev.soul.shared.Resources
 import dev.soul.shared.components.BaseBox
 import dev.soul.shared.components.BaseToolbar
+import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
+import dev.soul.shared.utils.UiEvent
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MapSearchRoot(
     modifier: Modifier = Modifier,
     viewModel: MapSearchViewModel,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
+    onStadiumDetail: (Screen) -> Unit,
+    onNavigateUp: () -> Unit
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
-
     val layoutDirection = LocalLayoutDirection.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(key1 = viewModel.uiEvent) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.Navigate -> {
+//                    onNavigate.invoke(event)
+                }
+
+                is UiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message.asString())
+                }
+
+                is UiEvent.NavigateUp -> onNavigateUp
+            }
+        }
+    }
 
     Scaffold(
         containerColor = CustomThemeManager.colors.baseScreenBackground,
@@ -40,7 +69,7 @@ fun MapSearchRoot(
                 BaseToolbar(
                     name = "Поиск по карте",
                     onBack = {
-                        viewModel.onEvent(MapSearchEvent.Back)
+                        onNavigateUp()
                     },
                     menu1 = Resources.Icon.Save,
                     menu2 = Resources.Icon.Search,
@@ -74,18 +103,44 @@ fun MapSearchRoot(
             Content(
                 state = state,
                 onEvent = viewModel::onEvent,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedContentScope = animatedContentScope,
+                onStadiumDetail = onStadiumDetail
             )
         }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun Content(
     modifier: Modifier = Modifier,
     state: MapSearchState,
-    onEvent: (MapSearchEvent) -> Unit
+    onEvent: (MapSearchEvent) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
+    onStadiumDetail: (Screen) -> Unit
 ) {
     BaseBox(modifier) {
-        MapComponent(state.stadiums)
+        MapComponent(
+            state.stadiums,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedContentScope = animatedContentScope,
+            onStadiumSelected = {
+                onStadiumDetail(Screen.StadiumDetail(
+                    id = it.id,
+                    lat = it.lat,
+                    long = it.long,
+                    name = it.name,
+                    address = it.address,
+                    type = it.type,
+                    price = it.price,
+                    rate = it.rate,
+                    image = it.image,
+                    distance = it.distance,
+                    isFavorite = it.isFavorite
+                ))
+            }
+        )
     }
 }
