@@ -3,9 +3,11 @@ package dev.soul.data.di
 import dev.soul.data.repository.auth.AuthRepositoryImpl
 import dev.soul.data.repository.UserRepositoryImpl
 import dev.soul.data.repository.user.SearchRepositoryImpl
+import dev.soul.data.repository.user.StadiumDetailRepositoryImpl
 import dev.soul.domain.repository.auth.AuthRepository
 import dev.soul.domain.repository.UserRepository
 import dev.soul.domain.repository.user.SearchRepository
+import dev.soul.domain.repository.user.StadiumDetailRepository
 import dev.soul.shared.utils.provideDispatcher
 import org.koin.dsl.module
 
@@ -18,5 +20,8 @@ fun repositoryModule() = module {
     }
     single<SearchRepository> {
         SearchRepositoryImpl(get(), get(), provideDispatcher())
+    }
+    single<StadiumDetailRepository> {
+        StadiumDetailRepositoryImpl(get(), get(), provideDispatcher())
     }
 }

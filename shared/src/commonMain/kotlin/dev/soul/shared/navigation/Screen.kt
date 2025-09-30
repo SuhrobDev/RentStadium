@@ -36,7 +36,7 @@ sealed class Screen {
 
     @Serializable
     data class StadiumDetail(
-        val id: String,
+        val id: Int,
         val lat: Double,
         val long: Double,
         val name: String,

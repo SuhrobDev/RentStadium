@@ -1,7 +1,7 @@
 package dev.soul.domain.model.user.search.maps
 
 data class StadiumModel(
-    val id: String,
+    val id: Int,
     val lat: Double,
     val long: Double,
     val name: String,

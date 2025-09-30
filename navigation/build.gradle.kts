@@ -49,6 +49,7 @@ kotlin {
             implementation(projects.feature.base)
             implementation(projects.feature.validation)
             implementation(projects.feature.user.search)
+            implementation(projects.feature.user.stadiumDetail)
         }
     }
 }

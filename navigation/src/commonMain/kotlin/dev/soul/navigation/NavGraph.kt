@@ -27,6 +27,9 @@ import dev.soul.search.ui.map.ui.MapSearchRoot
 import dev.soul.shared.components.BaseBox
 import dev.soul.shared.components.TextView
 import dev.soul.shared.navigation.Screen
+import dev.soul.stadium_detail.StadiumDetailEvent
+import dev.soul.stadium_detail.StadiumDetailViewModel
+import dev.soul.stadium_detail.ui.StadiumDetailRoot
 import dev.soul.validation.ValidationViewModel
 import dev.soul.validation.ui.ValidationRoot
 import org.koin.compose.viewmodel.koinViewModel
@@ -170,9 +173,22 @@ fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
             }
 
             composable<Screen.StadiumDetail> {
-                BaseBox {
-                    TextView(text = "soon")
+                val viewModel: StadiumDetailViewModel = koinViewModel<StadiumDetailViewModel>()
+
+                val param = it.toRoute<Screen.StadiumDetail>()
+
+                LaunchedEffect(Unit) {
+                    viewModel.onEvent(StadiumDetailEvent.Detail(param.id))
                 }
+
+                StadiumDetailRoot(
+                    viewModel = viewModel,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedContentScope = this@composable,
+                    onBack = {
+                        navController.navigateUp()
+                    }
+                )
             }
         }
     }

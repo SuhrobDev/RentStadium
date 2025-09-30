@@ -10,7 +10,10 @@ import dev.soul.data.remote.dto.user.search.response.StadiumDistanceResponse
 import dev.soul.data.remote.dto.user.search.response.StadiumImageResponse
 import dev.soul.data.remote.dto.user.search.response.StadiumItemResponse
 import dev.soul.data.remote.dto.user.search.response.StadiumLocationResponse
-import dev.soul.domain.model.PagingModel
+import dev.soul.data.remote.dto.user.stadium_detail.response.CommentResponse
+import dev.soul.data.remote.dto.user.stadium_detail.response.ImageResponse
+import dev.soul.data.remote.dto.user.stadium_detail.response.LocationResponse
+import dev.soul.data.remote.dto.user.stadium_detail.response.StadiumDetailResponse
 import dev.soul.domain.model.auth.login.request.LoginRequestModel
 import dev.soul.domain.model.auth.login.response.LoginResponseModel
 import dev.soul.domain.model.auth.phone.request.RegPhoneModel
@@ -21,7 +24,10 @@ import dev.soul.domain.model.user.search.response.StadiumDistanceModel
 import dev.soul.domain.model.user.search.response.StadiumImageModel
 import dev.soul.domain.model.user.search.response.StadiumItemModel
 import dev.soul.domain.model.user.search.response.StadiumLocationModel
-import dev.soul.network.PagingResponse
+import dev.soul.domain.model.user.stadium_detail.response.CommentModel
+import dev.soul.domain.model.user.stadium_detail.response.ImageModel
+import dev.soul.domain.model.user.stadium_detail.response.LocationModel
+import dev.soul.domain.model.user.stadium_detail.response.StadiumDetailModel
 
 fun LoginRequestModel.toDto(): LoginRequest {
     return LoginRequest(
@@ -104,6 +110,48 @@ fun StadiumImageResponse.toModel(): StadiumImageModel {
 
 fun StadiumLocationResponse?.toModel(): StadiumLocationModel {
     return StadiumLocationModel(
+        coordinates = this?.coordinates ?: emptyList(),
+        type = this?.type ?: ""
+    )
+}
+
+fun StadiumDetailResponse.toModel(): StadiumDetailModel {
+    return StadiumDetailModel(
+        address = address ?: "",
+        comments = comments?.map { it.toModel() } ?: emptyList(),
+        distance = distance ?: "",
+        id = id ?: 0,
+        images = images?.map { it.toModel() } ?: emptyList(),
+        liked = liked ?: "",
+        location = location?.toModel() ?: LocationModel(emptyList(), ""),
+        name = name ?: "",
+        price = price ?: "",
+        rating = rating ?: ""
+    )
+}
+
+fun CommentResponse.toModel(): CommentModel {
+    return CommentModel(
+        created = created ?: "",
+        id = id ?: 0,
+        message = message ?: "",
+        modified = modified ?: "",
+        rating = rating ?: 0,
+        stadium = stadium ?: 0,
+        user = user?.toModel()!!
+    )
+}
+
+fun ImageResponse.toModel(): ImageModel {
+    return ImageModel(
+        image = image ?: "",
+        name = name ?: "",
+        uuid = uuid ?: ""
+    )
+}
+
+fun LocationResponse?.toModel(): LocationModel {
+    return LocationModel(
         coordinates = this?.coordinates ?: emptyList(),
         type = this?.type ?: ""
     )

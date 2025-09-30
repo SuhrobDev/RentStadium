@@ -30,7 +30,7 @@ class MapSearchViewModel(
                     it.copy(
                         stadiums = listOf(
                             StadiumModel(
-                                id = "1",
+                                id = 1,
                                 lat = 41.3517476,
                                 long = 69.3015978,
                                 name = "Stadium 1",
@@ -43,7 +43,7 @@ class MapSearchViewModel(
                                 isFavorite = false
                             ),
                             StadiumModel(
-                                id = "2",
+                                id = 2,
                                 lat = 41.3520000,
                                 long = 69.3020000,
                                 name = "Stadium 2",
@@ -56,7 +56,7 @@ class MapSearchViewModel(
                                 isFavorite = true
                             ),
                             StadiumModel(
-                                id = "3",
+                                id = 3,
                                 lat = 41.3530000,
                                 long = 69.3030000,
                                 name = "Arena Max",
@@ -69,7 +69,7 @@ class MapSearchViewModel(
                                 isFavorite = false
                             ),
                             StadiumModel(
-                                id = "4",
+                                id = 4,
                                 lat = 41.3545000,
                                 long = 69.3045000,
                                 name = "Chilonzor Stadium",
@@ -82,7 +82,7 @@ class MapSearchViewModel(
                                 isFavorite = false
                             ),
                             StadiumModel(
-                                id = "5",
+                                id = 5,
                                 lat = 41.3560000,
                                 long = 69.3055000,
                                 name = "Olimpiya Sport Kompleksi",
