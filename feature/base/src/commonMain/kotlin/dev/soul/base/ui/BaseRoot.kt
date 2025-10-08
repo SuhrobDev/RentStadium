@@ -53,7 +53,7 @@ fun BaseGraphRoot(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         NavHost(
             modifier = Modifier.weight(1f),

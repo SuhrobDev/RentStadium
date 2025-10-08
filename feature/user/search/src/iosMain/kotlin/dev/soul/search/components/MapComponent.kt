@@ -17,7 +17,8 @@ actual fun MapComponent(
     stadiums: List<StadiumModel>,
     sharedTransitionScope: SharedTransitionScope,
     animatedContentScope: AnimatedContentScope,
-    onStadiumSelected: (StadiumModel) -> Unit
+    onStadiumSelected: (StadiumModel) -> Unit,
+    onMapMoved: (Double, Double) -> Unit
 ) {
     UIKitViewController(
         factory = mapViewController,

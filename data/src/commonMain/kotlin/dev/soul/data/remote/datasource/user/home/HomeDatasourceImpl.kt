@@ -15,8 +15,14 @@ class HomeDatasourceImpl(
     private val httpClient: HttpClient
 ) : HomeDatasource {
 
-    override suspend fun personalized(): MainResponse<PagingResponse<StadiumItemResponse>> {
-        return httpClient.get(HttpRoutes.PERSONALIZED).body()
+    override suspend fun personalized(
+        page: Int,
+        size: Int,
+    ): MainResponse<PagingResponse<StadiumItemResponse>> {
+        return httpClient.get(HttpRoutes.PERSONALIZED){
+            parameter(HttpParam.PAGE, page)
+            parameter(HttpParam.PAGE_SIZE, size)
+        }.body()
     }
 
     override suspend fun popular(

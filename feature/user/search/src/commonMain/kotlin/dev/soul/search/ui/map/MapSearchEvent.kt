@@ -8,4 +8,6 @@ sealed interface MapSearchEvent {
     data object Back : MapSearchEvent
 
     data class StadiumSelected(val stadium: StadiumModel) : MapSearchEvent
+
+    data class OnMapMoved(val lat: Double, val long: Double) : MapSearchEvent
 }

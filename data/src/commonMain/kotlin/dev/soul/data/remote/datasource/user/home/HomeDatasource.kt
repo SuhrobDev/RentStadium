@@ -5,7 +5,10 @@ import dev.soul.network.MainResponse
 import dev.soul.network.PagingResponse
 
 interface HomeDatasource {
-    suspend fun personalized(): MainResponse<PagingResponse<StadiumItemResponse>>
+    suspend fun personalized(
+        page: Int,
+        size: Int,
+    ): MainResponse<PagingResponse<StadiumItemResponse>>
 
     suspend fun popular(
         page: Int,

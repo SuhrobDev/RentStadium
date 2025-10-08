@@ -23,7 +23,10 @@ class HomeRepositoryImpl(
     val TAG = "HomeRepositoryImpl"
 
     override suspend fun personalized(): Flow<Resource<List<StadiumItemModel>>> = loadResult({
-        datasource.personalized()
+        datasource.personalized(
+            page = 1,
+            size = 15,
+        )
     }, { data, flow ->
         try {
             data.data?.results?.let {
