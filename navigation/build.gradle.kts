@@ -48,8 +48,10 @@ kotlin {
             implementation(projects.feature.auth)
             implementation(projects.feature.base)
             implementation(projects.feature.validation)
+            implementation(projects.feature.user.home)
             implementation(projects.feature.user.search)
             implementation(projects.feature.user.stadiumDetail)
+            implementation(projects.feature.user.more)
         }
     }
 }

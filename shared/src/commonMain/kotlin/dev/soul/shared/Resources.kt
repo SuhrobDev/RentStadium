@@ -10,6 +10,7 @@ import rentstadium.shared.generated.resources.ic_arrow_left
 import rentstadium.shared.generated.resources.ic_arrow_right
 import rentstadium.shared.generated.resources.ic_attendees
 import rentstadium.shared.generated.resources.ic_ball
+import rentstadium.shared.generated.resources.ic_discount
 import rentstadium.shared.generated.resources.ic_distance
 import rentstadium.shared.generated.resources.ic_empty_heart
 import rentstadium.shared.generated.resources.ic_favourite
@@ -67,6 +68,7 @@ object Resources {
         val PasswordHide =Res.drawable.ic_hidden_password
         val EmptyHeart = Res.drawable.ic_empty_heart
         val Likes = Res.drawable.ic_likes
+        val Price = Res.drawable.ic_discount
     }
 
     object Image {

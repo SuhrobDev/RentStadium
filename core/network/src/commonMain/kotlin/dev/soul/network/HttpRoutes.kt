@@ -10,5 +10,7 @@ object HttpRoutes {
     const val REFRESH_TOKEN = "auth/token/refresh/"
     const val STADIUM_LIST = "stadium/list/"
     const val STADIUM_DETAIL = "stadium/detail/"
+    const val PERSONALIZED = "stadium/recommendations/personalized"
+    const val POPULAR = "stadium/recommendations/popular"
 
 }

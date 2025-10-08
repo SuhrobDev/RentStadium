@@ -129,16 +129,16 @@ private fun Content(
             onStadiumSelected = {
                 onStadiumDetail(Screen.StadiumDetail(
                     id = it.id,
-                    lat = it.lat,
-                    long = it.long,
-                    name = it.name,
-                    address = it.address,
-                    type = it.type,
-                    price = it.price,
-                    rate = it.rate,
-                    image = it.image,
-                    distance = it.distance,
-                    isFavorite = it.isFavorite
+//                    lat = it.lat,
+//                    long = it.long,
+//                    name = it.name,
+//                    address = it.address,
+//                    type = it.type,
+//                    price = it.price,
+//                    rate = it.rate,
+//                    image = it.image,
+//                    distance = it.distance,
+//                    isFavorite = it.isFavorite
                 ))
             }
         )

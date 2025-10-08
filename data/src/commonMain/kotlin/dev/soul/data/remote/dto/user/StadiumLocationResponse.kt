@@ -1,4 +1,4 @@
-package dev.soul.data.remote.dto.user.search.response
+package dev.soul.data.remote.dto.user
 
 import kotlinx.serialization.Serializable
 

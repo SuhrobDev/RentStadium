@@ -6,6 +6,8 @@ import dev.soul.data.remote.datasource.user.UserDatasource
 import dev.soul.data.remote.datasource.user.UserDatasourceImpl
 import dev.soul.data.remote.datasource.user.home.HomeDatasource
 import dev.soul.data.remote.datasource.user.home.HomeDatasourceImpl
+import dev.soul.data.remote.datasource.user.more.MoreDatasource
+import dev.soul.data.remote.datasource.user.more.MoreDatasourceImpl
 import dev.soul.data.remote.datasource.user.search.SearchDatasource
 import dev.soul.data.remote.datasource.user.search.SearchDatasourceImpl
 import dev.soul.data.remote.datasource.user.stadium_detail.StadiumDetailDatasource
@@ -20,4 +22,5 @@ fun datasourceModule() = module {
     singleOf(::HomeDatasourceImpl) { bind<HomeDatasource>() }
     singleOf(::SearchDatasourceImpl) { bind<SearchDatasource>() }
     singleOf(::StadiumDetailDatasourceImpl) { bind<StadiumDetailDatasource>() }
+    singleOf(::MoreDatasourceImpl) { bind<MoreDatasource>() }
 }

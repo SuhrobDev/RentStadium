@@ -38,6 +38,7 @@ include(":feature:validation")
 include(":feature:user:home")
 include(":feature:user:search")
 include(":feature:user:stadium_detail")
+include("feature:user:more")
 
 include(":navigation")
 include(":core:network")

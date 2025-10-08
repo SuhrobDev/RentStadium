@@ -26,4 +26,3 @@ actual fun MapComponent(
 }
 
 lateinit var mapViewController: () -> UIViewController
-

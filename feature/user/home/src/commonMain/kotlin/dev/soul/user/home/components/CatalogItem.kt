@@ -49,11 +49,10 @@ fun CatalogItem(modifier: Modifier = Modifier) {
         }
 
         TextView(
-            text = "Спортивная одежда, Футбольные мячи",
-            fontSize = FontSize.REGULAR,
+            text = "Спортивная одежда   ",
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Medium,
-            modifier = Modifier.padding(horizontal = 4.dp)
+            modifier = Modifier.padding(horizontal = 4.dp),
         )
     }
 }

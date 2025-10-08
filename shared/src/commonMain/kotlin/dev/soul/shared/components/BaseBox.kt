@@ -30,22 +30,20 @@ fun BaseBox(
             .fillMaxSize()
             .background(backgroundColor)
     ) {
-
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            content()
+            if (isLoading.not()) content()
 
-            if (isLoading) {
+            if (isLoading)
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),
-//                        .background(CustomThemeManager.colors.screenBackground.copy(alpha = 0.3f)),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(trackColor = CustomThemeManager.colors.mainColor)
                 }
-            }
+            
         }
 
     }

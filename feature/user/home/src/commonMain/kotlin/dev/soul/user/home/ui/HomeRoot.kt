@@ -18,21 +18,34 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.soul.shared.Resources
 import dev.soul.shared.components.BaseBox
+import dev.soul.shared.components.CustomToast
 import dev.soul.shared.components.SearchView
+import dev.soul.shared.components.ToastStatus
+import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
 import dev.soul.shared.utils.UiEvent
+import dev.soul.user.home.HomeEvent
+import dev.soul.user.home.HomeState
+import dev.soul.user.home.HomeViewModel
 import dev.soul.user.home.components.CatalogItem
 import dev.soul.user.home.components.HomeStadionItem
 import dev.soul.user.home.components.ListTypeItem
@@ -41,15 +54,48 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun HomeRoot(
     modifier: Modifier = Modifier,
-    onNavigate: (UiEvent.Navigate) -> Unit
+    viewModel: HomeViewModel,
+    onDetail: (Int) -> Unit,
+    onMore: (Boolean) -> Unit,
 ) {
     val layoutDirection = LocalLayoutDirection.current
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(viewModel.uiEvent) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.Navigate -> {
+                    when (event.route) {
+                        is Screen.StadiumDetail -> {
+                            onDetail((event.route as Screen.StadiumDetail).id)
+                        }
+
+                        is Screen.More -> {
+                            if ((event.route as Screen.More).isPopular == true)
+                                onMore(true)
+                            else
+                                onMore(false)
+                        }
+
+                        else -> {}
+                    }
+                }
+
+                is UiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message.asString())
+                }
+
+                else -> Unit
+            }
+        }
+    }
 
     Scaffold(
         containerColor = CustomThemeManager.colors.baseScreenBackground
     ) { innerPadding ->
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(
                     PaddingValues(
@@ -59,18 +105,43 @@ fun HomeRoot(
                     )
                 ),
         ) {
-            Content()
+            Content(
+                modifier = Modifier.fillMaxSize(),
+                state = state,
+                onEvent = viewModel::onEvent
+            )
+
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 12.dp),
+                snackbar = { data ->
+                    CustomToast(
+                        message = data.visuals.message,
+                        onDismiss = {
+                            snackbarHostState
+                                .currentSnackbarData?.dismiss()
+                        },
+                        status = if (state.success) ToastStatus.SUCCESS else ToastStatus.ERROR
+                    )
+                }
+            )
         }
     }
 }
 
 @Composable
-private fun Content(modifier: Modifier = Modifier) {
-
+private fun Content(
+    modifier: Modifier = Modifier,
+    state: HomeState,
+    onEvent: (HomeEvent) -> Unit
+) {
     val lazyListState = rememberLazyListState()
+
     BaseBox {
         Column(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier,
         ) {
             Row(
                 modifier = Modifier
@@ -119,49 +190,83 @@ private fun Content(modifier: Modifier = Modifier) {
                 }
 
                 item {
-                    ListTypeItem(
-                        modifier = Modifier
-                            .padding(top = 6.dp)
-                            .padding(horizontal = 16.dp),
-                        title = "Tоп стадионы",
-                        onSeeAll = {}
-                    )
+                    if (state.popularLoading)
+                        CircularProgressIndicator()
+                    else
+                        ListTypeItem(
+                            modifier = Modifier
+                                .padding(top = 6.dp)
+                                .padding(horizontal = 16.dp),
+                            title = "Popular",
+                            onSeeAll = {
+                                onEvent(HomeEvent.MorePopular)
+                            }
+                        )
                 }
 
                 item {
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        contentPadding = PaddingValues(horizontal = 16.dp)
-                    ) {
-                        items(7) {
-                            HomeStadionItem(modifier = Modifier.width(168.dp))
+                    if (state.popularLoading)
+                        CircularProgressIndicator()
+                    else
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            contentPadding = PaddingValues(horizontal = 16.dp)
+                        ) {
+
+                            items(
+                                items = state.popularList,
+                                key = { "${it.id}_${it.location.coordinates.first()}_${it.location.coordinates.last()}" }) {
+                                HomeStadionItem(
+                                    modifier = Modifier.width(168.dp), it, onClick = {
+                                        onEvent(HomeEvent.Detail(it))
+                                    },
+                                    onLiked = {
+
+                                    })
+                            }
+
                         }
-                    }
                 }
 
                 item {
-                    ListTypeItem(
-                        modifier = Modifier
-                            .padding(top = 6.dp)
-                            .padding(horizontal = 16.dp),
-                        title = "Пустые стадионы",
-                        onSeeAll = {}
-                    )
+                    if (state.personalizedLoading)
+                        CircularProgressIndicator()
+                    else if (state.personalizedList.isNotEmpty())
+                        ListTypeItem(
+                            modifier = Modifier
+                                .padding(top = 6.dp)
+                                .padding(horizontal = 16.dp),
+                            title = "Personalized",
+                            onSeeAll = {
+                                onEvent(HomeEvent.MorePersonalized)
+                            }
+                        )
                 }
 
                 item {
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        contentPadding = PaddingValues(horizontal = 16.dp)
-                    ) {
-                        items(7) {
-                            HomeStadionItem(modifier = Modifier.width(168.dp))
+                    if (state.personalizedLoading)
+                        CircularProgressIndicator()
+                    else
+                        LazyRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            contentPadding = PaddingValues(horizontal = 16.dp)
+                        ) {
+                            items(
+                                items = state.personalizedList,
+                                key = { "${it.id}_${it.location.coordinates.first()}_${it.location.coordinates.last()}" }) {
+                                HomeStadionItem(
+                                    modifier = Modifier.width(168.dp), it, onClick = {
+                                        onEvent(HomeEvent.Detail(it))
+                                    },
+                                    onLiked = {
+
+                                    })
+                            }
                         }
-                    }
                 }
 
                 item {

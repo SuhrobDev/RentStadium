@@ -45,7 +45,6 @@ fun SearchRoot(
     onNotification: () -> Unit,
     onSearchOption: (Screen) -> Unit
 ) {
-
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val layoutDirection = LocalLayoutDirection.current

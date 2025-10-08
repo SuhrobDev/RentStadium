@@ -8,10 +8,12 @@ import dev.soul.data.di.datasourceModule
 import dev.soul.data.di.repositoryModule
 import dev.soul.datastore.datastore.di.dataStoreModule
 import dev.soul.datastore.datastore.di.datastoreModule
+import dev.soul.more.MoreViewModel
 import dev.soul.network.di.provideNetworkModule
 import dev.soul.search.SearchViewModel
 import dev.soul.search.ui.map.MapSearchViewModel
 import dev.soul.stadium_detail.StadiumDetailViewModel
+import dev.soul.user.home.HomeViewModel
 import dev.soul.validation.ValidationViewModel
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
@@ -28,6 +30,8 @@ fun sharedModule() = module {
     viewModel { SearchViewModel(get()) }
     viewModel { MapSearchViewModel(get()) }
     viewModel { StadiumDetailViewModel(get()) }
+    viewModel { HomeViewModel(get()) }
+    viewModel { MoreViewModel(get()) }
 }
 
 expect fun targetModule(): Module

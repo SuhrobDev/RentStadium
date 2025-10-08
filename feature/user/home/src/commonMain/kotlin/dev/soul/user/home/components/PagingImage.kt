@@ -21,22 +21,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import dev.soul.domain.model.user.search.response.StadiumImageModel
 import dev.soul.shared.Resources
 import dev.soul.shared.components.CustomPagerIndicator
 import dev.soul.shared.theme.CustomThemeManager
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun PagingImage(
     modifier: Modifier = Modifier,
-    imageList: List<DrawableResource>,
+    imageList: List<StadiumImageModel>,
     onLiked: () -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { imageList.size })
 
     Box(
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .clip(RoundedCornerShape(16.dp)),
     ) {
         HorizontalPager(
@@ -45,11 +46,12 @@ fun PagingImage(
                 .fillMaxWidth()
                 .height(175.dp)
         ) { page ->
-            Image(
-                painter = painterResource(imageList[page]),
+            AsyncImage(
+                model = imageList[page].image,
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Fit
+                contentScale = ContentScale.Fit,
+                placeholder = painterResource(Resources.Image.Stadium)
             )
         }
 

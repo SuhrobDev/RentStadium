@@ -118,16 +118,16 @@ class MapSearchViewModel(
                         UiEvent.Navigate(
                             Screen.StadiumDetail(
                                 id = event.stadium.id,
-                                lat = event.stadium.lat,
-                                long = event.stadium.long,
-                                name = event.stadium.name,
-                                address = event.stadium.address,
-                                type = event.stadium.type,
-                                price = event.stadium.price,
-                                rate = event.stadium.rate,
-                                image = event.stadium.image,
-                                distance = event.stadium.distance,
-                                isFavorite = event.stadium.isFavorite
+//                                lat = event.stadium.lat,
+//                                long = event.stadium.long,
+//                                name = event.stadium.name,
+//                                address = event.stadium.address,
+//                                type = event.stadium.type,
+//                                price = event.stadium.price,
+//                                rate = event.stadium.rate,
+//                                image = event.stadium.image,
+//                                distance = event.stadium.distance,
+//                                isFavorite = event.stadium.isFavorite
                             )
                         )
                     )

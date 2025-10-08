@@ -6,10 +6,10 @@ import dev.soul.data.remote.dto.auth.phone.request.RegPhoneRequest
 import dev.soul.data.remote.dto.auth.register.request.RegisterRequest
 import dev.soul.data.remote.dto.auth.verify.request.VerifyOtpRequest
 import dev.soul.data.remote.dto.user.response.UserResponse
-import dev.soul.data.remote.dto.user.search.response.StadiumDistanceResponse
-import dev.soul.data.remote.dto.user.search.response.StadiumImageResponse
+import dev.soul.data.remote.dto.user.StadiumDistanceResponse
+import dev.soul.data.remote.dto.user.StadiumImageResponse
 import dev.soul.data.remote.dto.user.search.response.StadiumItemResponse
-import dev.soul.data.remote.dto.user.search.response.StadiumLocationResponse
+import dev.soul.data.remote.dto.user.StadiumLocationResponse
 import dev.soul.data.remote.dto.user.stadium_detail.response.CommentResponse
 import dev.soul.data.remote.dto.user.stadium_detail.response.ImageResponse
 import dev.soul.data.remote.dto.user.stadium_detail.response.LocationResponse

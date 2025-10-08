@@ -11,6 +11,11 @@ import rentstadium.shared.generated.resources.notosans_light
 import rentstadium.shared.generated.resources.notosans_medium
 import rentstadium.shared.generated.resources.notosans_regular
 import rentstadium.shared.generated.resources.notosans_semibold
+import rentstadium.shared.generated.resources.sans_bold
+import rentstadium.shared.generated.resources.sans_light
+import rentstadium.shared.generated.resources.sans_medium
+import rentstadium.shared.generated.resources.sans_regular
+import rentstadium.shared.generated.resources.sans_semi_bold
 
 @Composable
 fun extraBoldFont() = FontFamily(
@@ -19,30 +24,30 @@ fun extraBoldFont() = FontFamily(
 
 @Composable
 fun boldFont() = FontFamily(
-    Font(Res.font.notosans_bold)
+    Font(Res.font.sans_bold)
 )
 
 
 @Composable
 fun semiBoldFont() = FontFamily(
-    Font(Res.font.notosans_semibold)
+    Font(Res.font.sans_semi_bold)
 )
 
 @Composable
 fun mediumFont() = FontFamily(
-    Font(Res.font.notosans_medium)
+    Font(Res.font.sans_medium)
 )
 
 
 @Composable
 fun regularFont() = FontFamily(
-    Font(Res.font.notosans_regular)
+    Font(Res.font.sans_regular)
 )
 
 
 @Composable
 fun lightFont() = FontFamily(
-    Font(Res.font.notosans_light)
+    Font(Res.font.sans_light)
 )
 
 

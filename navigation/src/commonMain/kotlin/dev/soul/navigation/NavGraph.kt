@@ -1,12 +1,9 @@
 package dev.soul.navigation
 
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.scaleOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,6 +19,11 @@ import dev.soul.auth.register_info.ui.RegisterInfoRoot
 import dev.soul.auth.register_phone.RegisterPhoneViewModel
 import dev.soul.auth.register_phone.ui.RegisterPhoneRoot
 import dev.soul.base.ui.BaseGraphRoot
+import dev.soul.more.MoreEvent
+import dev.soul.more.MoreType
+import dev.soul.more.MoreViewModel
+import dev.soul.more.ui.MoreRoot
+import dev.soul.search.SearchViewModel
 import dev.soul.search.ui.map.MapSearchViewModel
 import dev.soul.search.ui.map.ui.MapSearchRoot
 import dev.soul.shared.components.BaseBox
@@ -30,6 +32,7 @@ import dev.soul.shared.navigation.Screen
 import dev.soul.stadium_detail.StadiumDetailEvent
 import dev.soul.stadium_detail.StadiumDetailViewModel
 import dev.soul.stadium_detail.ui.StadiumDetailRoot
+import dev.soul.user.home.HomeViewModel
 import dev.soul.validation.ValidationViewModel
 import dev.soul.validation.ui.ValidationRoot
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,13 +46,6 @@ fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
         NavHost(
             navController = navController,
             startDestination = startDestination,
-            popEnterTransition = { EnterTransition.None },
-            popExitTransition = {
-                scaleOut(
-                    targetScale = 0.9f,
-                    transformOrigin = TransformOrigin(pivotFractionX = 0.5f, pivotFractionY = 0.5f)
-                )
-            }
         ) {
             composable<Screen.Validation> {
                 val viewModel: ValidationViewModel = koinViewModel<ValidationViewModel>()
@@ -61,12 +57,26 @@ fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
             }
 
             composable<Screen.Base> {
+                val homeViewModel: HomeViewModel = koinViewModel<HomeViewModel>()
+                val searchViewModel: SearchViewModel = koinViewModel<SearchViewModel>()
+
                 BaseGraphRoot(
+                    homeViewModel = homeViewModel,
+                    searchViewModel = searchViewModel,
                     onNotification = {
                         navController.navigate(Screen.Notification)
                     },
                     onSearchOption = {
                         navController.navigate(it)
+                    },
+                    onDetail = {
+                        navController.navigate(Screen.StadiumDetail(it))
+                    },
+                    onMore = {
+                        if (it)
+                            navController.navigate(Screen.More(isPopular = true))
+                        else
+                            navController.navigate(Screen.More(isPersonalized = true))
                     }
                 )
             }
@@ -189,6 +199,26 @@ fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
                         navController.navigateUp()
                     }
                 )
+            }
+
+            composable<Screen.More> {
+                val param = it.toRoute<Screen.More>()
+                val viewModel: MoreViewModel = koinViewModel<MoreViewModel>()
+
+                LaunchedEffect(Unit) {
+                    viewModel.onEvent(MoreEvent.Type(if (param.isPopular == true) MoreType.POPULAR else MoreType.PERSONALIZED))
+                }
+
+                MoreRoot(
+                    viewModel = viewModel,
+                    onDetail = {
+                        navController.navigate(Screen.StadiumDetail(it))
+                    },
+                    onBack = {
+                        navController.navigateUp()
+                    }
+                )
+
             }
         }
     }

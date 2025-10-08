@@ -29,6 +29,10 @@ class StadiumDetailViewModel(
             is StadiumDetailEvent.Detail -> {
                 getDetail(event.id)
             }
+            is StadiumDetailEvent.Share -> {
+                viewModelScope.launch {
+                }
+            }
         }
     }
 

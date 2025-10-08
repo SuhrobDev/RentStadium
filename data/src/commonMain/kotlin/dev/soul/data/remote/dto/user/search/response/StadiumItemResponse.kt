@@ -1,5 +1,8 @@
 package dev.soul.data.remote.dto.user.search.response
 
+import dev.soul.data.remote.dto.user.StadiumDistanceResponse
+import dev.soul.data.remote.dto.user.StadiumImageResponse
+import dev.soul.data.remote.dto.user.StadiumLocationResponse
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,5 +1,8 @@
 package dev.soul.stadium_detail.components
 
+import androidx.compose.animation.AnimatedContentScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,63 +31,69 @@ import dev.soul.shared.components.CustomPagerIndicator
 import dev.soul.shared.theme.CustomThemeManager
 import org.jetbrains.compose.resources.painterResource
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PagingImage(
     modifier: Modifier = Modifier,
     imageList: List<ImageModel>,
-    onSaved: () -> Unit
+    sharedTransitionScope: SharedTransitionScope,
+    animatedContentScope: AnimatedContentScope,
 ) {
     val pagerState = rememberPagerState(pageCount = { imageList.size })
 
-    Box(
-        modifier = Modifier.fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp)),
-    ) {
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(135.dp)
-        ) { page ->
-            AsyncImage(
-                model = imageList[page].image,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        CustomPagerIndicator(
-            modifier = Modifier
-                .align(Alignment.BottomCenter),
-            pagerState = pagerState,
-            pageCount = imageList.size,
-            activeColor = Color.Green,
-            inactiveColor = Color.LightGray,
-        )
-
+    with(sharedTransitionScope){
         Box(
-            modifier = Modifier
-                .padding(8.dp)
-                .size(38.dp)
-                .background(CustomThemeManager.colors.blurGreen, shape = CircleShape)
-                .padding(4.dp)
-                .align(Alignment.TopEnd)
-                .clip(CircleShape)
-                .clickable(
-                    indication = null,
-                    interactionSource = MutableInteractionSource()
-                ) {
-                    onSaved()
-                },
-            contentAlignment = Alignment.Center
+            modifier = modifier.fillMaxWidth()
+                .sharedElement(
+                    animatedVisibilityScope = animatedContentScope,
+                    sharedContentState = rememberSharedContentState(key = "image ${imageList.first().image}"),
+                ),
         ) {
-            Icon(
-                painter = painterResource(Resources.Icon.Save),
-                contentDescription = null,
-                tint = CustomThemeManager.colors.mainColor,
-                modifier = Modifier.size(24.dp)
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) { page ->
+                AsyncImage(
+                    model = imageList[page].image,
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            CustomPagerIndicator(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter),
+                pagerState = pagerState,
+                pageCount = imageList.size,
+                activeColor = Color.Green,
+                inactiveColor = Color.LightGray,
             )
+
+//            Box(
+//                modifier = Modifier
+//                    .padding(8.dp)
+//                    .size(38.dp)
+//                    .background(CustomThemeManager.colors.blurGreen, shape = CircleShape)
+//                    .padding(4.dp)
+//                    .align(Alignment.TopEnd)
+//                    .clip(CircleShape)
+//                    .clickable(
+//                        indication = null,
+//                        interactionSource = MutableInteractionSource()
+//                    ) {
+//                        onSaved()
+//                    },
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Icon(
+//                    painter = painterResource(Resources.Icon.Save),
+//                    contentDescription = null,
+//                    tint = CustomThemeManager.colors.mainColor,
+//                    modifier = Modifier.size(24.dp)
+//                )
+//            }
         }
     }
 }

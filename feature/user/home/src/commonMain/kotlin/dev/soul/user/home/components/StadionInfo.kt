@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.soul.domain.model.user.search.response.StadiumItemModel
 import dev.soul.shared.FontSize
 import dev.soul.shared.Resources
 import dev.soul.shared.components.TextView
@@ -18,25 +19,25 @@ import dev.soul.shared.theme.CustomThemeManager
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun StadionInfo(modifier: Modifier = Modifier) {
+fun StadionInfo(modifier: Modifier = Modifier,info: StadiumItemModel) {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.Start,
         modifier = modifier.padding(horizontal = 12.dp)
     ) {
         TextView(
-            text = "Школа номер 345",
+            text = info.name,
             fontWeight = FontWeight.SemiBold,
             fontSize = FontSize.EXTRA_REGULAR
         )
 
         TextView(
-            text = "132 000 сумов в час",
+            text = "${info.price} сумов в час",
             textColor = CustomThemeManager.colors.mainColor,
         )
 
         TextView(
-            text = "Ташкент, Чиланзар, 2-й кварт",
+            text = info.address,
             textColor = CustomThemeManager.colors.textColor.copy(alpha = 0.7f),
         )
 
@@ -49,7 +50,7 @@ fun StadionInfo(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TextView(text = "9.6")
+                TextView(text = info.rating)
 
                 Icon(
                     painter = painterResource(Resources.Icon.Star),

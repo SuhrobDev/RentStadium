@@ -26,7 +26,7 @@ fun TextView(
     overflow: TextOverflow = TextOverflow.Clip,
     textDecoration: TextDecoration = TextDecoration.None,
     fontSize: TextUnit = FontSize.SMALL,
-    lineHeight: TextUnit = TextUnit.Unspecified,
+    lineHeight: TextUnit = FontSize.EXTRA_REGULAR,
     textAlign: TextAlign? = null,
 //    style: TextStyle = TextStyle(
 //        platformStyle = PlatformTextStyle(

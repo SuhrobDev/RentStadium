@@ -100,7 +100,6 @@ class SearchViewModel(
             delay(1000)
             if (search.isNotBlank()) {
                 _state.update { it.copy(isLoading = true) }
-
                 repository.searchStadium(
                     page = 1,
                     size = 20,

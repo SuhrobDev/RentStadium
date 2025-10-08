@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -25,14 +26,18 @@ import dev.soul.search.ui.SearchRoot
 import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
 import dev.soul.shared.utils.TabScreens
+import dev.soul.user.home.HomeViewModel
 import dev.soul.user.home.ui.HomeRoot
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun BaseGraphRoot(
     modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel,
+    searchViewModel: SearchViewModel,
     onNotification: () -> Unit,
-    onSearchOption: (Screen) -> Unit
+    onSearchOption: (Screen) -> Unit,
+    onDetail: (Int) -> Unit,
+    onMore: (Boolean) -> Unit,
 ) {
 
     val navController = rememberNavController()
@@ -56,10 +61,13 @@ fun BaseGraphRoot(
             startDestination = TabScreens.Home
         ) {
             composable<TabScreens.Home> {
-                HomeRoot(onNavigate = {
-
-                })
+                HomeRoot(
+                    viewModel = homeViewModel,
+                    onDetail = onDetail,
+                    onMore = onMore
+                )
             }
+
             composable<TabScreens.Schedule> {
                 Box(
                     modifier = Modifier.fillMaxSize()
@@ -68,9 +76,11 @@ fun BaseGraphRoot(
             }
 
             composable<TabScreens.Search> {
-                val viewModel: SearchViewModel = koinViewModel<SearchViewModel>()
-
-                SearchRoot(viewModel = viewModel, onNotification = onNotification, onSearchOption = onSearchOption)
+                SearchRoot(
+                    viewModel = searchViewModel,
+                    onNotification = onNotification,
+                    onSearchOption = onSearchOption
+                )
             }
 
             composable<TabScreens.Shop> {
