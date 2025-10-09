@@ -3,13 +3,17 @@ package dev.soul.data.di
 import dev.soul.data.repository.UserRepositoryImpl
 import dev.soul.data.repository.auth.AuthRepositoryImpl
 import dev.soul.data.repository.user.HomeRepositoryImpl
+import dev.soul.data.repository.user.LikeShareRepositoryImpl
 import dev.soul.data.repository.user.MoreRepositoryImpl
+import dev.soul.data.repository.user.ScheduleRepositoryImpl
 import dev.soul.data.repository.user.SearchRepositoryImpl
 import dev.soul.data.repository.user.StadiumDetailRepositoryImpl
 import dev.soul.domain.repository.UserRepository
 import dev.soul.domain.repository.auth.AuthRepository
 import dev.soul.domain.repository.user.HomeRepository
+import dev.soul.domain.repository.user.LikeShareRepository
 import dev.soul.domain.repository.user.MoreRepository
+import dev.soul.domain.repository.user.ScheduleRepository
 import dev.soul.domain.repository.user.SearchRepository
 import dev.soul.domain.repository.user.StadiumDetailRepository
 import dev.soul.shared.utils.provideDispatcher
@@ -33,5 +37,11 @@ fun repositoryModule() = module {
     }
     single<MoreRepository> {
         MoreRepositoryImpl(get(), get(), provideDispatcher())
+    }
+    single<LikeShareRepository> {
+        LikeShareRepositoryImpl(get(), get(), provideDispatcher())
+    }
+    single<ScheduleRepository> {
+        ScheduleRepositoryImpl(get(), get(), provideDispatcher())
     }
 }

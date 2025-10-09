@@ -39,6 +39,8 @@ include(":feature:user:home")
 include(":feature:user:search")
 include(":feature:user:stadium_detail")
 include("feature:user:more")
+include("feature:user:liked")
+include("feature:user:schedule")
 
 include(":navigation")
 include(":core:network")

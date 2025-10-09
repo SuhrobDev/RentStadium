@@ -52,6 +52,8 @@ kotlin {
             implementation(projects.feature.user.search)
             implementation(projects.feature.user.stadiumDetail)
             implementation(projects.feature.user.more)
+            implementation(projects.feature.user.liked)
+            implementation(projects.feature.user.schedule)
         }
     }
 }

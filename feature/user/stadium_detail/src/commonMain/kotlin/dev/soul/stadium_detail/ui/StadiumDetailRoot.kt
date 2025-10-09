@@ -18,9 +18,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,7 +42,9 @@ import dev.soul.stadium_detail.components.AppBar
 import dev.soul.stadium_detail.components.NameSection
 import dev.soul.stadium_detail.components.PagingImage
 import dev.soul.stadium_detail.components.PriceSection
+import dev.soul.stadium_detail.components.ScheduleBottomSheet
 import dev.soul.stadium_detail.components.StadiumLocationSection
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -87,7 +92,7 @@ fun StadiumDetailRoot(
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun Content(
     modifier: Modifier = Modifier,
@@ -97,6 +102,11 @@ internal fun Content(
     animatedContentScope: AnimatedContentScope,
     onEvent: (StadiumDetailEvent) -> Unit,
 ) {
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = false
+    )
+    val scope = rememberCoroutineScope()
+
     BaseBox(
         modifier = Modifier,
         isLoading = state.isLoading
@@ -119,6 +129,7 @@ internal fun Content(
                         )
                     }
                 }
+
                 item {
                     Spacer(Modifier.height(16.dp))
                     NameSection(
@@ -179,15 +190,49 @@ internal fun Content(
                 }
             }
 
-            Box(Modifier.fillMaxWidth().height(96.dp).background(CustomThemeManager.colors.screenBackground)){
+            Box(
+                Modifier.fillMaxWidth().height(96.dp)
+                    .background(CustomThemeManager.colors.screenBackground)
+            ) {
                 ButtonView(
-                    modifier = Modifier.align(Alignment.TopCenter).padding(horizontal = 16.dp, vertical = 16.dp),
+                    modifier = Modifier.align(Alignment.TopCenter)
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
                     text = "Забронировать",
                     textColor = Color.White,
-                    onClick = {},
+                    isLoading = state.dateLoading,
+                    enabled = state.upcomingDays.isNotEmpty(),
+                    onClick = {
+                        scope.launch {
+                            sheetState.show()
+                        }
+                    },
                 )
             }
-
         }
+
+        if (sheetState.isVisible) {
+            ScheduleBottomSheet(
+                sheetState = sheetState,
+                weeks = state.upcomingDays,
+                onWeekClick = {
+                    onEvent(StadiumDetailEvent.DateSelect(it))
+                },
+                selectedDate = state.selectedDate ?: 0,
+                available = state.available,
+                onAvailableClick = {
+                    scope.launch {
+                        onEvent(StadiumDetailEvent.Share(it.id))
+                        sheetState.hide()
+                    }
+                },
+                onDismiss = {
+                    scope.launch {
+                        onEvent(StadiumDetailEvent.DateSelect(0))
+                        sheetState.hide()
+                    }
+                }
+            )
+        }
+
     }
 }

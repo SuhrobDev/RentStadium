@@ -14,7 +14,9 @@ import rentstadium.shared.generated.resources.ic_discount
 import rentstadium.shared.generated.resources.ic_distance
 import rentstadium.shared.generated.resources.ic_empty_heart
 import rentstadium.shared.generated.resources.ic_favourite
+import rentstadium.shared.generated.resources.ic_filled_heart
 import rentstadium.shared.generated.resources.ic_hidden_password
+import rentstadium.shared.generated.resources.ic_history
 import rentstadium.shared.generated.resources.ic_likes
 import rentstadium.shared.generated.resources.ic_location
 import rentstadium.shared.generated.resources.ic_map
@@ -22,6 +24,8 @@ import rentstadium.shared.generated.resources.ic_menu_home
 import rentstadium.shared.generated.resources.ic_menu_profile
 import rentstadium.shared.generated.resources.ic_menu_schedule
 import rentstadium.shared.generated.resources.ic_menu_shop
+import rentstadium.shared.generated.resources.ic_notification
+import rentstadium.shared.generated.resources.ic_person
 import rentstadium.shared.generated.resources.ic_save
 import rentstadium.shared.generated.resources.ic_search
 import rentstadium.shared.generated.resources.ic_share
@@ -64,11 +68,16 @@ object Resources {
         val Time = Res.drawable.ic_time
         val Warning = Res.drawable.ic_warning
         val X = Res.drawable.ic_x
-        val PasswordShow =Res.drawable.ic_shown_password
-        val PasswordHide =Res.drawable.ic_hidden_password
+        val PasswordShow = Res.drawable.ic_shown_password
+        val PasswordHide = Res.drawable.ic_hidden_password
         val EmptyHeart = Res.drawable.ic_empty_heart
+        val FilledHeart = Res.drawable.ic_filled_heart
         val Likes = Res.drawable.ic_likes
         val Price = Res.drawable.ic_discount
+        val History = Res.drawable.ic_history
+        val Notification = Res.drawable.ic_notification
+
+        val Person = Res.drawable.ic_person
     }
 
     object Image {

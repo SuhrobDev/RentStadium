@@ -11,5 +11,7 @@ object HttpParam {
     const val TYPE = "type"
     const val PAGE = "page"
     const val PAGE_SIZE = "page_size"
+    const val DATE = "date"
+    const val INCLUDE_PAST = "include_past"
 
 }

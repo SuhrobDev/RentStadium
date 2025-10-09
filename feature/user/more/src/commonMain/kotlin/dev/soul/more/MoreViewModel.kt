@@ -3,10 +3,11 @@ package dev.soul.more
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.soul.domain.model.user.search.response.StadiumItemModel
+import dev.soul.domain.repository.user.LikeShareRepository
 import dev.soul.domain.repository.user.MoreRepository
 import dev.soul.shared.navigation.Screen
-import dev.soul.shared.utils.Logger
 import dev.soul.shared.utils.UiEvent
+import dev.soul.shared.utils.UiText
 import dev.soul.shared.utils.onError
 import dev.soul.shared.utils.onSuccess
 import kotlinx.coroutines.channels.Channel
@@ -19,7 +20,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MoreViewModel(
-    private val repository: MoreRepository
+    private val repository: MoreRepository,
+    private val likeShareRepository: LikeShareRepository
 ) : ViewModel() {
     private val PAGE_SIZE = 100
 
@@ -78,13 +80,75 @@ class MoreViewModel(
                 }
             }
 
-            is MoreEvent.Like ->{
-                viewModelScope.launch {
-
-                }
+            is MoreEvent.Like -> {
+                like(event.id, event.current, event.isPopular)
             }
         }
     }
+
+    private fun like(id: Int, current: Boolean, isPopular: Boolean) {
+        viewModelScope.launch {
+            if (current)
+                likeShareRepository.deleteLiked(id = id).collect { result ->
+                    result.onSuccess { data ->
+                        _state.update { state ->
+                            if (isPopular) {
+                                state.copy(
+                                    success = true,
+                                    popularList = state.popularList.map { item ->
+                                        if (item.id == id) item.copy(liked = false) else item
+                                    }
+                                )
+                            } else {
+                                state.copy(
+                                    success = true,
+                                    personalizedList = state.personalizedList.map { item ->
+                                        if (item.id == id) item.copy(liked = false) else item
+                                    }
+                                )
+                            }
+                        }
+                    }.onError { error ->
+                        _state.update { it.copy(success = false) }
+                        _uiEvent.send(
+                            UiEvent.ShowSnackbar(
+                                UiText.DynamicString(error?.message ?: error?.name ?: "")
+                            )
+                        )
+                    }
+                }
+            else
+                likeShareRepository.like(id = id).collect { result ->
+                    result.onSuccess { data ->
+                        _state.update { state ->
+                            if (isPopular) {
+                                state.copy(
+                                    success = true,
+                                    popularList = state.popularList.map { item ->
+                                        if (item.id == id) item.copy(liked = true) else item
+                                    }
+                                )
+                            } else {
+                                state.copy(
+                                    success = true,
+                                    personalizedList = state.personalizedList.map { item ->
+                                        if (item.id == id) item.copy(liked = true) else item
+                                    }
+                                )
+                            }
+                        }
+                    }.onError { error ->
+                        _state.update { it.copy(success = false) }
+                        _uiEvent.send(
+                            UiEvent.ShowSnackbar(
+                                UiText.DynamicString(error?.message ?: error?.name ?: "")
+                            )
+                        )
+                    }
+                }
+        }
+    }
+
 
     private fun initialPopular() = viewModelScope.launch {
         repository.popular(page = 1, size = PAGE_SIZE, lat = 12.9721, lng = 77.5933).onStart {

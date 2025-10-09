@@ -24,10 +24,13 @@ import dev.soul.auth.register_info.ui.RegisterInfoRoot
 import dev.soul.auth.register_phone.RegisterPhoneViewModel
 import dev.soul.auth.register_phone.ui.RegisterPhoneRoot
 import dev.soul.base.ui.BaseGraphRoot
+import dev.soul.liked.LikedViewModel
+import dev.soul.liked.ui.LikedRoot
 import dev.soul.more.MoreEvent
 import dev.soul.more.MoreType
 import dev.soul.more.MoreViewModel
 import dev.soul.more.ui.MoreRoot
+import dev.soul.schedule.ScheduleViewModel
 import dev.soul.search.SearchViewModel
 import dev.soul.search.ui.map.MapSearchViewModel
 import dev.soul.search.ui.map.ui.MapSearchRoot
@@ -87,10 +90,12 @@ fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
 
             composable<Screen.Base> {
                 val homeViewModel: HomeViewModel = koinViewModel<HomeViewModel>()
+                val scheduleViewModel: ScheduleViewModel = koinViewModel<ScheduleViewModel>()
                 val searchViewModel: SearchViewModel = koinViewModel<SearchViewModel>()
 
                 BaseGraphRoot(
                     homeViewModel = homeViewModel,
+                    scheduleViewModel = scheduleViewModel,
                     searchViewModel = searchViewModel,
                     onNotification = {
                         navController.navigate(Screen.Notification)
@@ -106,6 +111,12 @@ fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
                             navController.navigate(Screen.More(isPopular = true))
                         else
                             navController.navigate(Screen.More(isPersonalized = true))
+                    },
+                    onScheduleHistory = {
+                        navController.navigate(Screen.ScheduleHistory)
+                    },
+                    onLiked = {
+                        navController.navigate(Screen.Liked)
                     }
                 )
             }
@@ -239,6 +250,21 @@ fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
                 }
 
                 MoreRoot(
+                    viewModel = viewModel,
+                    onDetail = {
+                        navController.navigate(Screen.StadiumDetail(it))
+                    },
+                    onBack = {
+                        navController.navigateUp()
+                    }
+                )
+
+            }
+
+            composable<Screen.Liked> {
+                val viewModel: LikedViewModel = koinViewModel<LikedViewModel>()
+
+                LikedRoot(
                     viewModel = viewModel,
                     onDetail = {
                         navController.navigate(Screen.StadiumDetail(it))

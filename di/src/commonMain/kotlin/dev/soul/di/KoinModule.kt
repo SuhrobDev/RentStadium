@@ -8,8 +8,10 @@ import dev.soul.data.di.datasourceModule
 import dev.soul.data.di.repositoryModule
 import dev.soul.datastore.datastore.di.dataStoreModule
 import dev.soul.datastore.datastore.di.datastoreModule
+import dev.soul.liked.LikedViewModel
 import dev.soul.more.MoreViewModel
 import dev.soul.network.di.provideNetworkModule
+import dev.soul.schedule.ScheduleViewModel
 import dev.soul.search.SearchViewModel
 import dev.soul.search.ui.map.MapSearchViewModel
 import dev.soul.stadium_detail.StadiumDetailViewModel
@@ -30,8 +32,10 @@ fun sharedModule() = module {
     viewModel { SearchViewModel(get()) }
     viewModel { MapSearchViewModel(get()) }
     viewModel { StadiumDetailViewModel(get()) }
-    viewModel { HomeViewModel(get()) }
-    viewModel { MoreViewModel(get()) }
+    viewModel { HomeViewModel(get(), get()) }
+    viewModel { MoreViewModel(get(), get()) }
+    viewModel { LikedViewModel(get()) }
+    viewModel { ScheduleViewModel(get()) }
 }
 
 expect fun targetModule(): Module

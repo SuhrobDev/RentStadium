@@ -8,20 +8,25 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import dev.soul.domain.model.user.search.response.StadiumItemModel
+import dev.soul.shared.utils.Logger
 
 @Composable
 fun HomeStadionItem(
     modifier: Modifier = Modifier,
     stadium: StadiumItemModel,
     onClick: (Int) -> Unit,
-    onLiked: (Int) -> Unit
+    onLiked: (Int, Boolean) -> Unit
 ) {
+    LaunchedEffect(stadium){
+        Logger.log("fdsqweeqtw","${stadium}")
+    }
     Column(
         modifier = modifier
             .background(Color.White, shape = RoundedCornerShape(16.dp))
@@ -36,8 +41,10 @@ fun HomeStadionItem(
         PagingImage(
             modifier = Modifier.clip(RoundedCornerShape(16.dp)),
             imageList = stadium.images,
+            isLiked = stadium.liked,
             onLiked = {
-                onLiked(stadium.id)
+                Logger.log("fdsqweeqtw","${stadium.id} ${stadium.liked}")
+                onLiked(stadium.id, stadium.liked)
             }
         )
 

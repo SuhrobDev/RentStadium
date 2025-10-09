@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,6 +20,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.soul.base.components.BottomBar
+import dev.soul.schedule.ScheduleViewModel
+import dev.soul.schedule.ui.ScheduleRoot
 import dev.soul.search.SearchViewModel
 import dev.soul.search.ui.SearchRoot
 import dev.soul.shared.navigation.Screen
@@ -33,13 +34,15 @@ import dev.soul.user.home.ui.HomeRoot
 fun BaseGraphRoot(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel,
+    scheduleViewModel: ScheduleViewModel,
     searchViewModel: SearchViewModel,
     onNotification: () -> Unit,
     onSearchOption: (Screen) -> Unit,
     onDetail: (Int) -> Unit,
     onMore: (Boolean) -> Unit,
+    onLiked: () -> Unit,
+    onScheduleHistory: () -> Unit
 ) {
-
     val navController = rememberNavController()
     val currentRoute by rememberUpdatedState(newValue = navController.currentBackStackEntryAsState().value?.destination?.route)
     var navigatedScreen by remember {
@@ -64,14 +67,17 @@ fun BaseGraphRoot(
                 HomeRoot(
                     viewModel = homeViewModel,
                     onDetail = onDetail,
-                    onMore = onMore
+                    onMore = onMore,
+                    onLiked = onLiked
                 )
             }
 
             composable<TabScreens.Schedule> {
-                Box(
-                    modifier = Modifier.fillMaxSize()
-                        .background(CustomThemeManager.colors.mainColor)
+                ScheduleRoot(
+                    onHistory = onScheduleHistory,
+                    onDetail = onDetail,
+                    onNotification = onNotification,
+                    viewModel = scheduleViewModel,
                 )
             }
 

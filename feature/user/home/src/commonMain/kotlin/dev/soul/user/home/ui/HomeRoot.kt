@@ -42,6 +42,7 @@ import dev.soul.shared.components.SearchView
 import dev.soul.shared.components.ToastStatus
 import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
+import dev.soul.shared.utils.Logger
 import dev.soul.shared.utils.UiEvent
 import dev.soul.user.home.HomeEvent
 import dev.soul.user.home.HomeState
@@ -57,6 +58,7 @@ fun HomeRoot(
     viewModel: HomeViewModel,
     onDetail: (Int) -> Unit,
     onMore: (Boolean) -> Unit,
+    onLiked: () -> Unit
 ) {
     val layoutDirection = LocalLayoutDirection.current
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -76,6 +78,10 @@ fun HomeRoot(
                                 onMore(true)
                             else
                                 onMore(false)
+                        }
+
+                        is Screen.Liked -> {
+                            onLiked()
                         }
 
                         else -> {}
@@ -139,6 +145,10 @@ private fun Content(
 ) {
     val lazyListState = rememberLazyListState()
 
+    LaunchedEffect(state.popularList) {
+        Logger.log("fdsqweeqtw", "${state.popularList}")
+    }
+
     BaseBox {
         Column(
             modifier = modifier,
@@ -167,7 +177,7 @@ private fun Content(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) {
-
+                        onEvent(HomeEvent.Liked)
                     }
                 )
             }
@@ -214,7 +224,6 @@ private fun Content(
                             verticalAlignment = Alignment.CenterVertically,
                             contentPadding = PaddingValues(horizontal = 16.dp)
                         ) {
-
                             items(
                                 items = state.popularList,
                                 key = { "${it.id}_${it.location.coordinates.first()}_${it.location.coordinates.last()}" }) {
@@ -222,8 +231,8 @@ private fun Content(
                                     modifier = Modifier.width(168.dp), it, onClick = {
                                         onEvent(HomeEvent.Detail(it))
                                     },
-                                    onLiked = {
-
+                                    onLiked = { id, current ->
+                                        onEvent(HomeEvent.Like(id, it.liked, true))
                                     })
                             }
 
@@ -262,8 +271,8 @@ private fun Content(
                                     modifier = Modifier.width(168.dp), it, onClick = {
                                         onEvent(HomeEvent.Detail(it))
                                     },
-                                    onLiked = {
-
+                                    onLiked = { id, current ->
+                                        onEvent(HomeEvent.Like(id, it.liked, false))
                                     })
                             }
                         }

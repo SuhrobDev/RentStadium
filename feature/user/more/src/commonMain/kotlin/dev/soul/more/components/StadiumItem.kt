@@ -28,7 +28,7 @@ fun StadiumItem(
     modifier: Modifier = Modifier,
     stadium: StadiumItemModel,
     onStadiumClick: (Int) -> Unit,
-    onLiked: (Int) -> Unit
+    onLiked: (Int, Boolean) -> Unit
 ) {
     Card(
         modifier = modifier,
@@ -43,7 +43,7 @@ fun StadiumItem(
                 modifier = Modifier.fillMaxWidth(),
                 imageList = stadium.images,
                 onLiked = {
-                    onLiked(stadium.id)
+                    onLiked(stadium.id, stadium.liked)
                 }
             )
             Column(

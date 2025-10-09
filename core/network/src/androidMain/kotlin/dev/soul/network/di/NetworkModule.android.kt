@@ -10,18 +10,20 @@ import org.koin.java.KoinJavaComponent.get
 
 actual fun createHttpClient(): HttpClient {
     val context: Context = get(Context::class.java)
+    // Always use applicationContext to prevent memory leaks in singletons
+    val appContext = context.applicationContext
+
     return HttpClient(OkHttp) {
-        Logger.log("dasdasd","${context.applicationInfo}")
+        Logger.log("HttpClient", "${appContext.applicationInfo}")
         engine {
             addInterceptor(
-                ChuckerInterceptor.Builder(context)
-                    .collector(ChuckerCollector(context))
+                ChuckerInterceptor.Builder(appContext)
+                    .collector(ChuckerCollector(appContext))
                     .maxContentLength(250_000L)
                     .redactHeaders(emptySet())
                     .alwaysReadResponseBody(false)
                     .build()
             )
-
         }
     }
 }

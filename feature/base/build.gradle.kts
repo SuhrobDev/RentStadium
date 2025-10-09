@@ -68,7 +68,7 @@ kotlin {
             implementation(projects.shared)
             implementation(projects.feature.user.home)
             implementation(projects.feature.user.search)
-
+            implementation(projects.feature.user.schedule)
 
         }
     }

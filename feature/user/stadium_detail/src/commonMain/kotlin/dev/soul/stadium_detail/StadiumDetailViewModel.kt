@@ -29,11 +29,35 @@ class StadiumDetailViewModel(
             is StadiumDetailEvent.Detail -> {
                 getDetail(event.id)
             }
+
             is StadiumDetailEvent.Share -> {
                 viewModelScope.launch {
                 }
             }
+
+            is StadiumDetailEvent.DateSelect -> {
+                _state.update {
+                    it.copy(
+                        selectedDate = event.date
+                    )
+                }
+                available(_state.value.upcomingDays[event.date].date)
+            }
+
+            is StadiumDetailEvent.AvailableSelect -> {
+                viewModelScope.launch {
+                    _state.update {
+                        it.copy(
+                            selectedAvailable = event.available
+                        )
+                    }
+                }
+            }
         }
+    }
+
+    init {
+        upcomingDays()
     }
 
     private fun getDetail(
@@ -59,6 +83,81 @@ class StadiumDetailViewModel(
                         it.copy(
                             isLoading = false,
                             error = error?.message ?: error?.name ?: "Unknown error"
+                        )
+                    }
+                    _uiEvent.send(
+                        UiEvent.ShowSnackbar(
+                            UiText.DynamicString(
+                                error?.message ?: error?.name ?: "Unknown error"
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private fun upcomingDays() {
+        viewModelScope.launch {
+            repository.upcomingDays().onStart {
+                _state.update {
+                    it.copy(
+                        dateLoading = true
+                    )
+                }
+            }.collect {
+                it.onSuccess { data ->
+                    _state.update {
+                        it.copy(
+                            selectedDate = 0,
+                            upcomingDays = data ?: emptyList(),
+                            dateLoading = false
+                        )
+                    }
+                    if (data?.isNotEmpty() == true)
+                        available(data[0].date)
+
+                }.onError { error ->
+                    _state.update {
+                        it.copy(
+                            dateLoading = false,
+                            error = it.error
+                        )
+                    }
+                    _uiEvent.send(
+                        UiEvent.ShowSnackbar(
+                            UiText.DynamicString(
+                                error?.message ?: error?.name ?: "Unknown error"
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private fun available(date: String) {
+        viewModelScope.launch {
+            val id = state.value.stadiumDetail?.id ?: return@launch
+            repository.available(id, date).onStart {
+                _state.update {
+                    it.copy(
+                        availableLoading = true
+                    )
+                }
+            }.collect {
+                it.onSuccess { data ->
+                    _state.update {
+                        it.copy(
+                            availableLoading = false,
+                            available = data ?: emptyList()
+                        )
+                    }
+                }.onError { error ->
+                    _state.update {
+                        it.copy(
+                            dateLoading = false,
+                            error = it.error
                         )
                     }
                     _uiEvent.send(

@@ -38,7 +38,6 @@ import dev.soul.shared.components.CustomToast
 import dev.soul.shared.components.ToastStatus
 import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
-import dev.soul.shared.utils.Logger
 import dev.soul.shared.utils.UiEvent
 
 @Composable
@@ -142,8 +141,8 @@ internal fun Content(
                 onStadiumClick = {
                     onEvent(MoreEvent.Detail(it))
                 },
-                onLiked = {
-                    onEvent(MoreEvent.Like(it))
+                onLiked = { id, current ->
+                    onEvent(MoreEvent.Like(id, current, state.isPopular ?: false))
                 }
             )
         }

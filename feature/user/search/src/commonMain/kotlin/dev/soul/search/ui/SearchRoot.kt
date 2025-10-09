@@ -18,10 +18,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -38,6 +42,7 @@ import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
 import dev.soul.shared.utils.Logger
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchRoot(
     modifier: Modifier = Modifier,
@@ -49,9 +54,25 @@ fun SearchRoot(
 
     val layoutDirection = LocalLayoutDirection.current
     val lazyListState = rememberLazyListState()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
-        containerColor = CustomThemeManager.colors.baseScreenBackground
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = CustomThemeManager.colors.baseScreenBackground,
+        topBar = {
+            CollapsingTopBar(
+                searchQuery = state.searchQuery,
+                onSearchQueryChange = {
+                    viewModel.onEvent(SearchEvent.SearchQuery(it))
+                },
+                onNotificationClick = onNotification,
+                isFocused = state.isSearchFocused,
+                onFocusedChange = {
+                    viewModel.onEvent(SearchEvent.IsSearchFocused(it))
+                },
+                scrollBehavior = scrollBehavior
+            )
+        }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -68,7 +89,6 @@ fun SearchRoot(
                 lazyListState = lazyListState,
                 state = state,
                 onEvent = viewModel::onEvent,
-                onNotification = onNotification,
                 onOption = onSearchOption
             )
         }
@@ -81,7 +101,6 @@ internal fun Content(
     lazyListState: LazyListState,
     state: SearchState,
     onEvent: (SearchEvent) -> Unit,
-    onNotification: () -> Unit,
     onOption: (Screen) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -100,22 +119,6 @@ internal fun Content(
         Column(
             modifier = modifier.fillMaxSize(),
         ) {
-            CollapsingTopBar(
-                searchQuery = state.searchQuery,
-                onSearchQueryChange = {
-                    onEvent(SearchEvent.SearchQuery(it))
-                },
-                onNotificationClick = onNotification,
-                isFocused = state.isSearchFocused,
-                onFocusedChange = {
-                    if (!it) {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                    }
-                    onEvent(SearchEvent.IsSearchFocused(it))
-                }
-            )
-
             AnimatedVisibility(
                 state.isSearchFocused.not(),
                 enter = expandVertically() + fadeIn(),

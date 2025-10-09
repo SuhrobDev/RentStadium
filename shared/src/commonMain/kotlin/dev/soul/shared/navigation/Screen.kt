@@ -35,6 +35,12 @@ sealed class Screen {
     data object BySaved : Screen()
 
     @Serializable
+    data object Liked : Screen()
+
+    @Serializable
+    data object ScheduleHistory : Screen()
+
+    @Serializable
     data class StadiumDetail(
         val id: Int,
     ) : Screen()

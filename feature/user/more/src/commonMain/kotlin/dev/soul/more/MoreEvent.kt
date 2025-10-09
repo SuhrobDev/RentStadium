@@ -7,7 +7,7 @@ interface MoreEvent {
 
     object onRefresh : MoreEvent
 
-    data class Like(val id: Int) : MoreEvent
+    data class Like(val id: Int, val current: Boolean, val isPopular: Boolean) : MoreEvent
 }
 
 enum class MoreType {
