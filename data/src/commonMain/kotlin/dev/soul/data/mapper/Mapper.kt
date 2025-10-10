@@ -9,6 +9,8 @@ import dev.soul.data.remote.dto.user.StadiumDistanceResponse
 import dev.soul.data.remote.dto.user.StadiumImageResponse
 import dev.soul.data.remote.dto.user.StadiumLocationResponse
 import dev.soul.data.remote.dto.user.available.response.AvailableDto
+import dev.soul.data.remote.dto.user.book.request.BookRequestDto
+import dev.soul.data.remote.dto.user.book.response.BookResponseDto
 import dev.soul.data.remote.dto.user.like.response.LikedItemDto
 import dev.soul.data.remote.dto.user.response.UserResponse
 import dev.soul.data.remote.dto.user.schedule.response.DatetimeRange
@@ -25,6 +27,8 @@ import dev.soul.domain.model.auth.phone.request.RegPhoneModel
 import dev.soul.domain.model.auth.register.request.RegisterModel
 import dev.soul.domain.model.auth.verify.request.VerifyOtpModel
 import dev.soul.domain.model.user.available.response.AvailableModel
+import dev.soul.domain.model.user.book.request.BookRequestModel
+import dev.soul.domain.model.user.book.response.BookResponseModel
 import dev.soul.domain.model.user.response.UserModel
 import dev.soul.domain.model.user.schedule.response.DatetimeRangeModel
 import dev.soul.domain.model.user.schedule.response.ScheduleItemModel
@@ -220,5 +224,33 @@ fun DatetimeRange.toModel(): DatetimeRangeModel {
     return DatetimeRangeModel(
         lower = lower ?: "",
         upper = upper ?: ""
+    )
+}
+
+fun DatetimeRangeModel.toDto(): DatetimeRange {
+    return DatetimeRange(
+        lower = lower,
+        upper = upper
+    )
+}
+
+fun BookResponseDto.toModel(): BookResponseModel {
+    return BookResponseModel(
+        created = created ?: "",
+        datetimeRange = datetime_range?.toModel()!!,
+        id = id ?: 0,
+        modified = modified ?: "",
+        notes = notes ?: "",
+        stadium = stadium ?: 0,
+        status = status ?: ""
+    )
+}
+
+fun BookRequestModel.toDto(): BookRequestDto {
+    return BookRequestDto(
+        datetime_range = datetimeRange.toDto(),
+        note = note,
+        stadium = stadium,
+        status = status
     )
 }

@@ -15,6 +15,7 @@ object HttpRoutes {
     const val LIKE = "stadium/favorites/"
     const val AVAILABLE = "stadium/availability/"
     const val SCHEDULE = "stadium/user-bookings/list/"
+    const val BOOK = "stadium/bookings/"
     const val UPCOMING_DAYS = "utility/upcoming-days/"
 
 }

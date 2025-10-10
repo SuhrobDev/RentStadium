@@ -14,15 +14,21 @@ import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,17 +38,23 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.soul.shared.components.BaseBox
 import dev.soul.shared.components.ButtonView
+import dev.soul.shared.components.CustomToast
+import dev.soul.shared.components.ToastStatus
+import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
+import dev.soul.shared.utils.UiEvent
 import dev.soul.stadium_detail.StadiumDetailEvent
 import dev.soul.stadium_detail.StadiumDetailState
 import dev.soul.stadium_detail.StadiumDetailViewModel
 import dev.soul.stadium_detail.components.AboutSection
 import dev.soul.stadium_detail.components.ActionSection
 import dev.soul.stadium_detail.components.AppBar
+import dev.soul.stadium_detail.components.ConfirmBottomSheet
 import dev.soul.stadium_detail.components.NameSection
 import dev.soul.stadium_detail.components.PagingImage
 import dev.soul.stadium_detail.components.PriceSection
 import dev.soul.stadium_detail.components.ScheduleBottomSheet
+import dev.soul.stadium_detail.components.SelectedAvailableItem
 import dev.soul.stadium_detail.components.StadiumLocationSection
 import kotlinx.coroutines.launch
 
@@ -58,6 +70,24 @@ fun StadiumDetailRoot(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val layoutDirection = LocalLayoutDirection.current
     val lazyListState = rememberLazyListState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(viewModel.uiEvent) {
+        viewModel.uiEvent.collect { event ->
+            when (event) {
+                is UiEvent.Navigate -> {
+                }
+
+                is UiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message.asString())
+                }
+
+                is UiEvent.NavigateUp -> {
+                    onBack()
+                }
+            }
+        }
+    }
 
     Scaffold(
         containerColor = CustomThemeManager.colors.baseScreenBackground
@@ -88,6 +118,23 @@ fun StadiumDetailRoot(
                     }
                 }
             )
+
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 12.dp),
+                snackbar = { data ->
+                    CustomToast(
+                        message = data.visuals.message,
+                        onDismiss = {
+                            snackbarHostState
+                                .currentSnackbarData?.dismiss()
+                        },
+                        status = if (state.success) ToastStatus.SUCCESS else ToastStatus.ERROR
+                    )
+                }
+            )
         }
     }
 }
@@ -102,8 +149,11 @@ internal fun Content(
     animatedContentScope: AnimatedContentScope,
     onEvent: (StadiumDetailEvent) -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false
+    val scheduleSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    val confirmSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
     )
     val scope = rememberCoroutineScope()
 
@@ -190,45 +240,104 @@ internal fun Content(
                 }
             }
 
-            Box(
-                Modifier.fillMaxWidth().height(96.dp)
-                    .background(CustomThemeManager.colors.screenBackground)
+            Column(
+                Modifier.fillMaxWidth().heightIn(min = 96.dp)
+                    .background(CustomThemeManager.colors.screenBackground),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+
+                if (state.selectedAvailable.isNotEmpty())
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
+                    ) {
+                        items(state.selectedAvailable, key = { "${it.id}_${it.stadium}_$it" }) {
+                            SelectedAvailableItem(
+                                modifier = Modifier.fillMaxWidth(),
+                                item = it,
+                                weeks = state.upcomingDays,
+                                onItemClick = {
+                                    onEvent(StadiumDetailEvent.SelectedWeekTab(it.dayOfWeekDisplay))
+                                    scope.launch {
+                                        scheduleSheetState.show()
+                                    }
+                                }
+                            )
+                        }
+                    }
+
                 ButtonView(
-                    modifier = Modifier.align(Alignment.TopCenter)
+                    modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 16.dp),
-                    text = "Забронировать",
+                    text =
+                        if (state.selectedAvailable.isEmpty())
+                        "Расписание"
+                    else
+                        "Забронировать",
                     textColor = Color.White,
                     isLoading = state.dateLoading,
                     enabled = state.upcomingDays.isNotEmpty(),
                     onClick = {
-                        scope.launch {
-                            sheetState.show()
-                        }
-                    },
+                        if (state.selectedAvailable.isEmpty())
+                            scope.launch {
+                                scheduleSheetState.show()
+                            }
+                        else
+                            scope.launch {
+                                confirmSheetState.show()
+                            }
+                    }
                 )
+                Spacer(Modifier.height(32.dp))
             }
         }
 
-        if (sheetState.isVisible) {
+        if (scheduleSheetState.isVisible) {
+            LaunchedEffect(scheduleSheetState.isVisible) {
+                if (scheduleSheetState.isVisible && state.selectedDate != null) {
+                    onEvent(StadiumDetailEvent.DateSelect(state.selectedDate))
+                }
+            }
+
             ScheduleBottomSheet(
-                sheetState = sheetState,
+                sheetState = scheduleSheetState,
                 weeks = state.upcomingDays,
                 onWeekClick = {
                     onEvent(StadiumDetailEvent.DateSelect(it))
                 },
                 selectedDate = state.selectedDate ?: 0,
                 available = state.available,
+                selectedAvailable = state.selectedAvailable,
+                availableLoading = state.availableLoading,
                 onAvailableClick = {
-                    scope.launch {
-                        onEvent(StadiumDetailEvent.Share(it.id))
-                        sheetState.hide()
-                    }
+                    onEvent(StadiumDetailEvent.AvailableSelect(it))
                 },
                 onDismiss = {
                     scope.launch {
                         onEvent(StadiumDetailEvent.DateSelect(0))
-                        sheetState.hide()
+                        scheduleSheetState.hide()
+                    }
+                }
+            )
+        }
+
+        if (confirmSheetState.isVisible) {
+            ConfirmBottomSheet(
+                sheetState = confirmSheetState,
+                stadiumDetail = state.stadiumDetail,
+                loading = state.bookLoading,
+                selectedAvailable = state.selectedAvailable,
+                onConfirm = {
+                    onEvent(StadiumDetailEvent.Book)
+                },
+                onPrivacyClick = {
+
+                },
+                onDismiss = {
+                    scope.launch {
+                        confirmSheetState.hide()
                     }
                 }
             )

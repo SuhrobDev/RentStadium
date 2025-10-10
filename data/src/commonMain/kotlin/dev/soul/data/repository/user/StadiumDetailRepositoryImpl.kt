@@ -1,9 +1,12 @@
 package dev.soul.data.repository.user
 
+import dev.soul.data.mapper.toDto
 import dev.soul.data.mapper.toModel
 import dev.soul.data.remote.datasource.user.stadium_detail.StadiumDetailDatasource
 import dev.soul.datastore.datastore.DataStoreRepository
 import dev.soul.domain.model.user.available.response.AvailableModel
+import dev.soul.domain.model.user.book.request.BookRequestModel
+import dev.soul.domain.model.user.book.response.BookResponseModel
 import dev.soul.domain.model.user.stadium_detail.response.StadiumDetailModel
 import dev.soul.domain.model.user.upcoming_days.response.UpcomingDaysModel
 import dev.soul.domain.repository.user.StadiumDetailRepository
@@ -81,5 +84,30 @@ class StadiumDetailRepositoryImpl(
             flow.emit(Resource.Error(NetworkError.SERIALIZATION))
         }
     }).flowOn(dispatcher.io)
+
+    override suspend fun book(body: List<BookRequestModel>): Flow<Resource<List<BookResponseModel>>> =
+        loadResult({
+            datasource.book(body.map { it.toDto() })
+        }, { data, flow ->
+            try {
+                data.data?.let {
+                    flow.emit(
+                        Resource.Success(
+                            it.map { it.toModel() }
+                        )
+                    )
+                } ?: runCatching {
+                    flow.emit(
+                        Resource.Error(
+                            message = NetworkError.SERVER_CUSTOM_ERROR.apply {
+                                message = data.error ?: "Error on loading personalized"
+                            }
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                flow.emit(Resource.Error(NetworkError.SERIALIZATION))
+            }
+        }).flowOn(dispatcher.io)
 
 }

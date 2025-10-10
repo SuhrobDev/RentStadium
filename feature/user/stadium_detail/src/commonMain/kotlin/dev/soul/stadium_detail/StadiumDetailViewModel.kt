@@ -45,13 +45,31 @@ class StadiumDetailViewModel(
             }
 
             is StadiumDetailEvent.AvailableSelect -> {
-                viewModelScope.launch {
-                    _state.update {
-                        it.copy(
-                            selectedAvailable = event.available
+                if (event.available.isActive) {
+                    _state.update { currentState ->
+                        val currentSelected = currentState.selectedAvailable
+                        val newSelected = if (currentSelected.any { it.id == event.available.id }) {
+                            currentSelected.filter { it.id != event.available.id }
+                        } else {
+                            currentSelected + event.available
+                        }
+                        currentState.copy(
+                            selectedAvailable = newSelected
                         )
                     }
                 }
+            }
+
+            is StadiumDetailEvent.SelectedWeekTab -> {
+                _state.update {
+                    it.copy(
+                        selectedDate = state.value.upcomingDays.indexOfFirst { it.weekday.lowercase() == event.dayOfWeek.lowercase() }
+                    )
+                }
+            }
+
+            is StadiumDetailEvent.Book -> {
+                book()
             }
         }
     }
@@ -82,6 +100,7 @@ class StadiumDetailViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
+                            success = false,
                             error = error?.message ?: error?.name ?: "Unknown error"
                         )
                     }
@@ -121,6 +140,7 @@ class StadiumDetailViewModel(
                     _state.update {
                         it.copy(
                             dateLoading = false,
+                            success = false,
                             error = it.error
                         )
                     }
@@ -157,6 +177,7 @@ class StadiumDetailViewModel(
                     _state.update {
                         it.copy(
                             dateLoading = false,
+                            success = false,
                             error = it.error
                         )
                     }
@@ -171,4 +192,75 @@ class StadiumDetailViewModel(
             }
         }
     }
+
+    private fun book(){
+        viewModelScope.launch {
+            val slots = state.value.selectedAvailable
+            if (slots.isEmpty()) return@launch
+
+            val stadiumId = state.value.stadiumDetail?.id ?: return@launch
+            val upcomingDays = state.value.upcomingDays
+
+            val bookRequests = slots.mapNotNull { slot ->
+                // Find the date that corresponds to this slot's day of week
+                val matchingDay = upcomingDays.find {
+                    it.weekday.lowercase() == slot.dayOfWeekDisplay.lowercase()
+                }
+
+                matchingDay?.let { day ->
+                    dev.soul.domain.model.user.book.request.BookRequestModel(
+                        datetimeRange = dev.soul.domain.model.user.schedule.response.DatetimeRangeModel(
+                            lower = "${day.date}T${slot.startTime}+05:00",
+                            upper = "${day.date}T${slot.endTime}+05:00"
+                        ),
+                        note = "",
+                        stadium = stadiumId,
+                        status = "PENDING"
+                    )
+                }
+            }
+
+            if (bookRequests.isEmpty()) return@launch
+
+            repository.book(bookRequests).onStart {
+                _state.update {
+                    it.copy(
+                        bookLoading = true
+                    )
+                }
+            }.collect { result ->
+                result.onSuccess { data ->
+                    _state.update { currentState ->
+                        currentState.copy(
+                            bookLoading = false,
+                            success = true,
+                            selectedAvailable = emptyList()
+                        )
+                    }
+                    _uiEvent.send(
+                        UiEvent.ShowSnackbar(
+                            UiText.DynamicString(
+                                "Бронирование успешно создано!"
+                            )
+                        )
+                    )
+                }.onError { error ->
+                    _state.update { currentState ->
+                        currentState.copy(
+                            success = false,
+                            bookLoading = false,
+                        )
+                    }
+                    _uiEvent.send(
+                        UiEvent.ShowSnackbar(
+                            UiText.DynamicString(
+                                error?.message ?: error?.name ?: "Unknown error"
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
 }

@@ -44,4 +44,7 @@ fun repositoryModule() = module {
     single<ScheduleRepository> {
         ScheduleRepositoryImpl(get(), get(), provideDispatcher())
     }
+    single<ScheduleRepository> {
+        ScheduleRepositoryImpl(get(), get(), provideDispatcher())
+    }
 }

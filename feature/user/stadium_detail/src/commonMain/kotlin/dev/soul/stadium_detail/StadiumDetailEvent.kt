@@ -7,4 +7,7 @@ sealed interface StadiumDetailEvent {
     data class Share(val id: Int?) : StadiumDetailEvent
     data class DateSelect(val date: Int) : StadiumDetailEvent
     data class AvailableSelect(val available: AvailableModel) : StadiumDetailEvent
+    data class SelectedWeekTab(val dayOfWeek: String) : StadiumDetailEvent
+    data object Book : StadiumDetailEvent
+
 }

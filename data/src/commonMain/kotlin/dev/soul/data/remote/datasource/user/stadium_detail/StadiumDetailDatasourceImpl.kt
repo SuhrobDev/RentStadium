@@ -1,6 +1,8 @@
 package dev.soul.data.remote.datasource.user.stadium_detail
 
 import dev.soul.data.remote.dto.user.available.response.AvailableDto
+import dev.soul.data.remote.dto.user.book.request.BookRequestDto
+import dev.soul.data.remote.dto.user.book.response.BookResponseDto
 import dev.soul.data.remote.dto.user.stadium_detail.response.StadiumDetailResponse
 import dev.soul.data.remote.dto.user.upcoming_days.response.UpcomingDaysDto
 import dev.soul.network.HttpParam
@@ -9,6 +11,8 @@ import dev.soul.network.MainResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 
 class StadiumDetailDatasourceImpl(
     private val httpClient: HttpClient
@@ -27,6 +31,12 @@ class StadiumDetailDatasourceImpl(
             url {
                 parameters.append(HttpParam.DATE, date)
             }
+        }.body()
+    }
+
+    override suspend fun book(body: List<BookRequestDto>): MainResponse<List<BookResponseDto>> {
+        return httpClient.post(HttpRoutes.BOOK) {
+            setBody(body)
         }.body()
     }
 }
