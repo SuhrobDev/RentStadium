@@ -71,11 +71,97 @@ class StadiumDetailViewModel(
             is StadiumDetailEvent.Book -> {
                 book()
             }
+
+            is StadiumDetailEvent.ScheduleDetail -> {
+                getScheduleDetail(event.id)
+            }
+
+            is StadiumDetailEvent.DeleteSchedule -> {
+                deleteSchedule(event.id)
+            }
         }
     }
 
     init {
         upcomingDays()
+    }
+
+    private fun deleteSchedule(
+        id: Int
+    ) {
+        viewModelScope.launch {
+            repository.deleteSchedule(id).onStart {
+                _state.update {
+                    it.copy(
+                        deleteLoading = true
+                    )
+                }
+            }.collect {
+                it.onSuccess { data ->
+                    _state.update {
+                        it.copy(
+                            deleteLoading = false
+                        )
+                    }
+                    _uiEvent.send(UiEvent.NavigateUp)
+                }.onError { error ->
+                    _state.update {
+                        it.copy(
+                            deleteLoading = false,
+                            success = false,
+                            error = error?.message ?: error?.name ?: "Unknown error"
+                        )
+                    }
+                    _uiEvent.send(
+                        UiEvent.ShowSnackbar(
+                            UiText.DynamicString(
+                                error?.message ?: error?.name ?: "Unknown error"
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+
+    private fun getScheduleDetail(
+        id: Int
+    ) {
+        viewModelScope.launch {
+            repository.scheduleDetail(id).onStart {
+                _state.update {
+                    it.copy(
+                        isLoading = true
+                    )
+                }
+            }.collect {
+                it.onSuccess { data ->
+                    _state.update {
+                        it.copy(
+                            stadiumDetail = data?.stadium,
+                            scheduleDetail = data,
+                            isLoading = false
+                        )
+                    }
+                }.onError { error ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            success = false,
+                            error = error?.message ?: error?.name ?: "Unknown error"
+                        )
+                    }
+                    _uiEvent.send(
+                        UiEvent.ShowSnackbar(
+                            UiText.DynamicString(
+                                error?.message ?: error?.name ?: "Unknown error"
+                            )
+                        )
+                    )
+                }
+            }
+        }
     }
 
     private fun getDetail(
@@ -193,7 +279,7 @@ class StadiumDetailViewModel(
         }
     }
 
-    private fun book(){
+    private fun book() {
         viewModelScope.launch {
             val slots = state.value.selectedAvailable
             if (slots.isEmpty()) return@launch

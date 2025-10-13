@@ -3,6 +3,7 @@ package dev.soul.data.remote.datasource.user.stadium_detail
 import dev.soul.data.remote.dto.user.available.response.AvailableDto
 import dev.soul.data.remote.dto.user.book.request.BookRequestDto
 import dev.soul.data.remote.dto.user.book.response.BookResponseDto
+import dev.soul.data.remote.dto.user.schedule.detail.response.ScheduleDetailDto
 import dev.soul.data.remote.dto.user.stadium_detail.response.StadiumDetailResponse
 import dev.soul.data.remote.dto.user.upcoming_days.response.UpcomingDaysDto
 import dev.soul.network.HttpParam
@@ -10,6 +11,7 @@ import dev.soul.network.HttpRoutes
 import dev.soul.network.MainResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -38,5 +40,13 @@ class StadiumDetailDatasourceImpl(
         return httpClient.post(HttpRoutes.BOOK) {
             setBody(body)
         }.body()
+    }
+
+    override suspend fun scheduleDetail(id: Int): ScheduleDetailDto {
+        return httpClient.get(HttpRoutes.SCHEDULE_DETAIL + "$id/").body()
+    }
+
+    override suspend fun deleteSchedule(id: Int) {
+        return httpClient.delete(HttpRoutes.SCHEDULE_DETAIL + "$id/").body()
     }
 }

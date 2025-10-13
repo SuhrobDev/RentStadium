@@ -9,6 +9,7 @@ androidx-lifecycle = "2.9.3"
 #compose-multiplatform = "1.8.2"
 compose-multiplatform = "1.9.0-rc01"
 kotlin = "2.2.20"
+kotlinxDatetime = "0.7.1"
 navigation = "2.9.0-rc01"
 auth = "2.3.1"
 notifier = "1.5.1"
@@ -60,6 +61,7 @@ androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecyc
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 
 
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 splash-screen = { module = "androidx.core:core-splashscreen", version.ref = "splash" }
 compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
 

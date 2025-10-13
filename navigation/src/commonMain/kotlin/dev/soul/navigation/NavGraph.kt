@@ -37,6 +37,7 @@ import dev.soul.search.ui.map.ui.MapSearchRoot
 import dev.soul.shared.components.BaseBox
 import dev.soul.shared.components.TextView
 import dev.soul.shared.navigation.Screen
+import dev.soul.shared.utils.Logger
 import dev.soul.stadium_detail.StadiumDetailEvent
 import dev.soul.stadium_detail.StadiumDetailViewModel
 import dev.soul.stadium_detail.ui.StadiumDetailRoot
@@ -104,7 +105,7 @@ fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
                         navController.navigate(it)
                     },
                     onDetail = {
-                        navController.navigate(Screen.StadiumDetail(it))
+                        navController.navigate(Screen.StadiumDetail(scheduleDetail = it))
                     },
                     onMore = {
                         if (it)
@@ -228,7 +229,17 @@ fun SetupNavGraph(startDestination: Screen = Screen.Validation) {
                 val param = it.toRoute<Screen.StadiumDetail>()
 
                 LaunchedEffect(Unit) {
-                    viewModel.onEvent(StadiumDetailEvent.Detail(param.id))
+                    Logger.log(
+                        "asfagewr",
+                        "detail: ${param.detail} -- schedule: ${param.scheduleDetail}"
+                    )
+                    param.detail?.let {
+                        viewModel.onEvent(StadiumDetailEvent.Detail(it))
+                    }
+
+                    param.scheduleDetail?.let {
+                        viewModel.onEvent(StadiumDetailEvent.ScheduleDetail(it))
+                    }
                 }
 
                 StadiumDetailRoot(

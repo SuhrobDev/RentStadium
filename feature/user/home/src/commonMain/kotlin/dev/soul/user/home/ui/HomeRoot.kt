@@ -70,7 +70,7 @@ fun HomeRoot(
                 is UiEvent.Navigate -> {
                     when (event.route) {
                         is Screen.StadiumDetail -> {
-                            onDetail((event.route as Screen.StadiumDetail).id)
+                            onDetail((event.route as Screen.StadiumDetail).detail!!)
                         }
 
                         is Screen.More -> {

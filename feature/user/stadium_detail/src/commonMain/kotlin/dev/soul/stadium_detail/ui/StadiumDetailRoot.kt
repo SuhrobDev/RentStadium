@@ -36,11 +36,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.soul.domain.model.user.schedule.response.ScheduleStatus
 import dev.soul.shared.components.BaseBox
 import dev.soul.shared.components.ButtonView
 import dev.soul.shared.components.CustomToast
 import dev.soul.shared.components.ToastStatus
-import dev.soul.shared.navigation.Screen
 import dev.soul.shared.theme.CustomThemeManager
 import dev.soul.shared.utils.UiEvent
 import dev.soul.stadium_detail.StadiumDetailEvent
@@ -53,6 +53,7 @@ import dev.soul.stadium_detail.components.ConfirmBottomSheet
 import dev.soul.stadium_detail.components.NameSection
 import dev.soul.stadium_detail.components.PagingImage
 import dev.soul.stadium_detail.components.PriceSection
+import dev.soul.stadium_detail.components.ScheduleAvailableItem
 import dev.soul.stadium_detail.components.ScheduleBottomSheet
 import dev.soul.stadium_detail.components.SelectedAvailableItem
 import dev.soul.stadium_detail.components.StadiumLocationSection
@@ -90,6 +91,7 @@ fun StadiumDetailRoot(
     }
 
     Scaffold(
+        modifier = modifier,
         containerColor = CustomThemeManager.colors.baseScreenBackground
     ) { innerPadding ->
         Box(
@@ -243,53 +245,77 @@ internal fun Content(
             Column(
                 Modifier.fillMaxWidth().heightIn(min = 96.dp)
                     .background(CustomThemeManager.colors.screenBackground),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                if (state.selectedAvailable.isNotEmpty())
+                if (state.selectedAvailable.isNotEmpty() || state.scheduleDetail != null)
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        contentPadding = PaddingValues(vertical = 8.dp, horizontal = 16.dp)
+                        contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp)
                     ) {
-                        items(state.selectedAvailable, key = { "${it.id}_${it.stadium}_$it" }) {
-                            SelectedAvailableItem(
-                                modifier = Modifier.fillMaxWidth(),
-                                item = it,
-                                weeks = state.upcomingDays,
-                                onItemClick = {
-                                    onEvent(StadiumDetailEvent.SelectedWeekTab(it.dayOfWeekDisplay))
-                                    scope.launch {
-                                        scheduleSheetState.show()
+                        if (state.selectedAvailable.isNotEmpty())
+                            items(state.selectedAvailable, key = { "${it.id}_${it.stadium}_$it" }) {
+                                SelectedAvailableItem(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    item = it,
+                                    weeks = state.upcomingDays,
+                                    onItemClick = {
+                                        onEvent(StadiumDetailEvent.SelectedWeekTab(it.dayOfWeekDisplay))
+                                        scope.launch {
+                                            scheduleSheetState.show()
+                                        }
                                     }
-                                }
-                            )
-                        }
+                                )
+                            }
+
+                        if (state.scheduleDetail != null)
+                            item {
+                                ScheduleAvailableItem(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    item = state.scheduleDetail
+                                )
+                            }
                     }
 
-                ButtonView(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 16.dp),
-                    text =
-                        if (state.selectedAvailable.isEmpty())
-                        "Расписание"
-                    else
-                        "Забронировать",
-                    textColor = Color.White,
-                    isLoading = state.dateLoading,
-                    enabled = state.upcomingDays.isNotEmpty(),
-                    onClick = {
-                        if (state.selectedAvailable.isEmpty())
-                            scope.launch {
-                                scheduleSheetState.show()
-                            }
-                        else
-                            scope.launch {
-                                confirmSheetState.show()
-                            }
-                    }
-                )
+                if (state.scheduleDetail == null)
+                    ButtonView(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 16.dp),
+                        text =
+                            if (state.selectedAvailable.isEmpty())
+                                "Расписание"
+                            else
+                                "Забронировать",
+                        textColor = Color.White,
+                        isLoading = state.dateLoading,
+                        enabled = state.upcomingDays.isNotEmpty(),
+                        onClick = {
+                            if (state.selectedAvailable.isEmpty())
+                                scope.launch {
+                                    scheduleSheetState.show()
+                                }
+                            else
+                                scope.launch {
+                                    confirmSheetState.show()
+                                }
+                        }
+                    )
+                else if (state.scheduleDetail.status == ScheduleStatus.PENDING)
+                    ButtonView(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .padding(bottom = 16.dp),
+                        text = "cancel ${state.scheduleDetail.status.toUI().text}",
+                        textColor = CustomThemeManager.colors.textColor,
+                        isLoading = state.deleteLoading,
+                        containerColor = CustomThemeManager.colors.lightGray,
+                        onClick = {
+                            onEvent(StadiumDetailEvent.DeleteSchedule(state.scheduleDetail.id))
+                        }
+                    )
+
                 Spacer(Modifier.height(32.dp))
             }
         }
@@ -344,4 +370,37 @@ internal fun Content(
         }
 
     }
+}
+
+data class StatusUI(
+    val text: String,
+    val backgroundColor: Color,
+    val textColor: Color,
+)
+
+@Composable
+fun ScheduleStatus.toUI(): StatusUI = when (this) {
+    ScheduleStatus.PENDING -> StatusUI(
+        text = "Pending",
+        backgroundColor = CustomThemeManager.colors.yellowColor, // amber
+        textColor = Color.White
+    )
+
+    ScheduleStatus.ACCEPTED -> StatusUI(
+        text = "Accepted",
+        backgroundColor = CustomThemeManager.colors.mainColor, // green
+        textColor = Color.White
+    )
+
+    ScheduleStatus.CANCELLED -> StatusUI(
+        text = "Cancelled",
+        backgroundColor = CustomThemeManager.colors.redColor, // red
+        textColor = Color.White
+    )
+
+    ScheduleStatus.REJECTED -> StatusUI(
+        text = "Rejected",
+        backgroundColor = Color(0xFF9E9E9E), // gray
+        textColor = Color.White
+    )
 }

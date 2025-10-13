@@ -128,7 +128,7 @@ private fun Content(
             animatedContentScope = animatedContentScope,
             onStadiumSelected = {
                 onStadiumDetail(Screen.StadiumDetail(
-                    id = it.id,
+                    detail = it.id,
                 ))
             },
             onMapMoved = { lat, long ->

@@ -55,7 +55,7 @@ fun MoreRoot(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.Navigate -> {
-                    onDetail((event.route as Screen.StadiumDetail).id)
+                    onDetail((event.route as Screen.StadiumDetail).detail!!)
                 }
 
                 is UiEvent.ShowSnackbar -> {

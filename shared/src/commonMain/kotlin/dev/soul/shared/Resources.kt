@@ -10,6 +10,8 @@ import rentstadium.shared.generated.resources.ic_arrow_left
 import rentstadium.shared.generated.resources.ic_arrow_right
 import rentstadium.shared.generated.resources.ic_attendees
 import rentstadium.shared.generated.resources.ic_ball
+import rentstadium.shared.generated.resources.ic_calendar
+import rentstadium.shared.generated.resources.ic_clock_circle
 import rentstadium.shared.generated.resources.ic_discount
 import rentstadium.shared.generated.resources.ic_distance
 import rentstadium.shared.generated.resources.ic_empty_heart
@@ -17,6 +19,7 @@ import rentstadium.shared.generated.resources.ic_favourite
 import rentstadium.shared.generated.resources.ic_filled_heart
 import rentstadium.shared.generated.resources.ic_hidden_password
 import rentstadium.shared.generated.resources.ic_history
+import rentstadium.shared.generated.resources.ic_history_schedule
 import rentstadium.shared.generated.resources.ic_likes
 import rentstadium.shared.generated.resources.ic_location
 import rentstadium.shared.generated.resources.ic_map
@@ -33,6 +36,7 @@ import rentstadium.shared.generated.resources.ic_shown_password
 import rentstadium.shared.generated.resources.ic_star
 import rentstadium.shared.generated.resources.ic_ticket
 import rentstadium.shared.generated.resources.ic_time
+import rentstadium.shared.generated.resources.ic_time_schedule
 import rentstadium.shared.generated.resources.ic_warning
 import rentstadium.shared.generated.resources.ic_x
 import rentstadium.shared.generated.resources.img_closed_stadium
@@ -76,8 +80,10 @@ object Resources {
         val Price = Res.drawable.ic_discount
         val History = Res.drawable.ic_history
         val Notification = Res.drawable.ic_notification
-
         val Person = Res.drawable.ic_person
+        val HistorySchedule = Res.drawable.ic_history_schedule
+        val Calendar = Res.drawable.ic_calendar
+        val TimeSchedule = Res.drawable.ic_clock_circle
     }
 
     object Image {

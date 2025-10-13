@@ -38,7 +38,7 @@ class MoreViewModel(
         when (event) {
             is MoreEvent.Detail -> {
                 viewModelScope.launch {
-                    _uiEvent.send(UiEvent.Navigate(Screen.StadiumDetail(event.id)))
+                    _uiEvent.send(UiEvent.Navigate(Screen.StadiumDetail(detail = event.id)))
                 }
             }
 

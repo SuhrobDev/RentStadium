@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -39,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.soul.schedule.ScheduleEvent
 import dev.soul.schedule.ScheduleState
 import dev.soul.schedule.ScheduleViewModel
+import dev.soul.schedule.components.ScheduleItem
 import dev.soul.shared.Resources
 import dev.soul.shared.components.CustomToast
 import dev.soul.shared.components.EmptyLiked
@@ -61,7 +63,8 @@ fun ScheduleRoot(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val layoutDirection = LocalLayoutDirection.current
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     // Smooth text size interpolation based on collapse fraction
     val titleFontSize = lerp(
@@ -74,7 +77,7 @@ fun ScheduleRoot(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is UiEvent.Navigate -> {
-                    onDetail((event.route as Screen.StadiumDetail).id)
+                    onDetail((event.route as Screen.StadiumDetail).scheduleDetail!!)
                 }
 
                 is UiEvent.ShowSnackbar -> {
@@ -107,7 +110,7 @@ fun ScheduleRoot(
                     ) {
                         IconButton(onClick = onHistory) {
                             Icon(
-                                painter = painterResource(Resources.Icon.History),
+                                painter = painterResource(Resources.Icon.HistorySchedule),
                                 contentDescription = "History",
                                 tint = CustomThemeManager.colors.textColor
                             )
@@ -174,17 +177,36 @@ internal fun Content(
 ) {
     val listState = rememberLazyListState()
 
+    LaunchedEffect(Unit) {
+        onEvent(ScheduleEvent.Refresh)
+    }
     LazyColumn(
         modifier = modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(vertical = 16.dp),
+        contentPadding = PaddingValues(16.dp),
         state = listState
     ) {
         if (state.schedules.isEmpty())
             item {
                 EmptyLiked()
             }
+
+        items(state.schedules, key = { "${it.id}_${it.stadium?.id}_$it" }) {
+            ScheduleItem(
+                modifier = Modifier.fillMaxWidth(),
+                item = it,
+                onItemClick = {
+                    onEvent(ScheduleEvent.Detail(it.id))
+                },
+                onFriendClick = {
+
+                },
+                onRouteClick = {
+
+                }
+            )
+        }
 
         item {
             Spacer(modifier = Modifier.height(96.dp))

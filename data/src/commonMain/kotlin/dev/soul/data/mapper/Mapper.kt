@@ -13,6 +13,7 @@ import dev.soul.data.remote.dto.user.book.request.BookRequestDto
 import dev.soul.data.remote.dto.user.book.response.BookResponseDto
 import dev.soul.data.remote.dto.user.like.response.LikedItemDto
 import dev.soul.data.remote.dto.user.response.UserResponse
+import dev.soul.data.remote.dto.user.schedule.detail.response.ScheduleDetailDto
 import dev.soul.data.remote.dto.user.schedule.response.DatetimeRange
 import dev.soul.data.remote.dto.user.schedule.response.ScheduleItemDto
 import dev.soul.data.remote.dto.user.search.response.StadiumItemResponse
@@ -30,8 +31,10 @@ import dev.soul.domain.model.user.available.response.AvailableModel
 import dev.soul.domain.model.user.book.request.BookRequestModel
 import dev.soul.domain.model.user.book.response.BookResponseModel
 import dev.soul.domain.model.user.response.UserModel
+import dev.soul.domain.model.user.schedule.detail.response.ScheduleDetailModel
 import dev.soul.domain.model.user.schedule.response.DatetimeRangeModel
 import dev.soul.domain.model.user.schedule.response.ScheduleItemModel
+import dev.soul.domain.model.user.schedule.response.toStatus
 import dev.soul.domain.model.user.search.response.StadiumDistanceModel
 import dev.soul.domain.model.user.search.response.StadiumImageModel
 import dev.soul.domain.model.user.search.response.StadiumItemModel
@@ -215,8 +218,8 @@ fun ScheduleItemDto.toModel(): ScheduleItemModel {
         id = id ?: 0,
         modified = modified ?: "",
         notes = notes ?: "",
-        stadium = stadium ?: 0,
-        status = status ?: ""
+        stadium = stadium?.toModel(),
+        status = (status ?: "").toStatus()
     )
 }
 
@@ -252,5 +255,17 @@ fun BookRequestModel.toDto(): BookRequestDto {
         note = note,
         stadium = stadium,
         status = status
+    )
+}
+
+fun ScheduleDetailDto.toModel(): ScheduleDetailModel{
+    return ScheduleDetailModel(
+        created = created ?: "",
+        datetimeRange = datetime_range?.toModel(),
+        id = id ?: 0,
+        modified = modified ?: "",
+        notes = notes ?: "",
+        stadium = stadium?.toModel(),
+        status = (status ?: "").toStatus()
     )
 }

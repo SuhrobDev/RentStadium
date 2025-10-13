@@ -117,7 +117,7 @@ class MapSearchViewModel(
                     _uiEvent.send(
                         UiEvent.Navigate(
                             Screen.StadiumDetail(
-                                id = event.stadium.id,
+                                detail = event.stadium.id,
                             )
                         )
                     )

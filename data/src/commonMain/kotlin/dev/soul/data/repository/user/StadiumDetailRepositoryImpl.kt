@@ -7,6 +7,7 @@ import dev.soul.datastore.datastore.DataStoreRepository
 import dev.soul.domain.model.user.available.response.AvailableModel
 import dev.soul.domain.model.user.book.request.BookRequestModel
 import dev.soul.domain.model.user.book.response.BookResponseModel
+import dev.soul.domain.model.user.schedule.detail.response.ScheduleDetailModel
 import dev.soul.domain.model.user.stadium_detail.response.StadiumDetailModel
 import dev.soul.domain.model.user.upcoming_days.response.UpcomingDaysModel
 import dev.soul.domain.repository.user.StadiumDetailRepository
@@ -64,26 +65,27 @@ class StadiumDetailRepositoryImpl(
         }
     }).flowOn(dispatcher.io)
 
-    override suspend fun available(id: Int, date: String): Flow<Resource<List<AvailableModel>>> = loadResult({
-        Logger.log("dsagqwerq","$id $date")
-        datasource.available(id,date)
-    }, { data, flow ->
-        try {
-            data.data?.let {
-                flow.emit(
-                    Resource.Success(
-                        it.map { it.toModel() }
+    override suspend fun available(id: Int, date: String): Flow<Resource<List<AvailableModel>>> =
+        loadResult({
+            Logger.log("dsagqwerq", "$id $date")
+            datasource.available(id, date)
+        }, { data, flow ->
+            try {
+                data.data?.let {
+                    flow.emit(
+                        Resource.Success(
+                            it.map { it.toModel() }
+                        )
                     )
-                )
-            } ?: runCatching {
-                flow.emit(
-                    Resource.Error(message = NetworkError.NULL_BODY)
-                )
+                } ?: runCatching {
+                    flow.emit(
+                        Resource.Error(message = NetworkError.NULL_BODY)
+                    )
+                }
+            } catch (e: Exception) {
+                flow.emit(Resource.Error(NetworkError.SERIALIZATION))
             }
-        } catch (e: Exception) {
-            flow.emit(Resource.Error(NetworkError.SERIALIZATION))
-        }
-    }).flowOn(dispatcher.io)
+        }).flowOn(dispatcher.io)
 
     override suspend fun book(body: List<BookRequestModel>): Flow<Resource<List<BookResponseModel>>> =
         loadResult({
@@ -109,5 +111,40 @@ class StadiumDetailRepositoryImpl(
                 flow.emit(Resource.Error(NetworkError.SERIALIZATION))
             }
         }).flowOn(dispatcher.io)
+
+    override suspend fun scheduleDetail(id: Int): Flow<Resource<ScheduleDetailModel>> = loadResult({
+        datasource.scheduleDetail(id)
+    }, { data, flow ->
+        try {
+            data?.let {
+                flow.emit(
+                    Resource.Success(
+                        it.toModel()
+                    )
+                )
+            } ?: runCatching {
+                flow.emit(
+                    Resource.Error(message = NetworkError.NULL_BODY)
+                )
+            }
+        } catch (e: Exception) {
+            flow.emit(Resource.Error(NetworkError.SERIALIZATION))
+        }
+    }).flowOn(dispatcher.io)
+
+
+    override suspend fun deleteSchedule(id: Int): Flow<Resource<Unit>> = loadResult({
+        datasource.deleteSchedule(id)
+    }, { data, flow ->
+        try {
+            flow.emit(
+                Resource.Success(
+                    Unit
+                )
+            )
+        } catch (e: Exception) {
+            flow.emit(Resource.Error(NetworkError.SERIALIZATION))
+        }
+    }).flowOn(dispatcher.io)
 
 }

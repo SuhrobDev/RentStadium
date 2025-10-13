@@ -3,6 +3,7 @@ package dev.soul.schedule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.soul.domain.repository.user.ScheduleRepository
+import dev.soul.shared.navigation.Screen
 import dev.soul.shared.utils.UiEvent
 import dev.soul.shared.utils.UiText
 import dev.soul.shared.utils.onError
@@ -36,6 +37,12 @@ class ScheduleViewModel(
 
             is ScheduleEvent.Refresh -> {
                 schedule()
+            }
+
+            is ScheduleEvent.Detail -> {
+                viewModelScope.launch {
+                    _uiEvent.send(UiEvent.Navigate(Screen.StadiumDetail(scheduleDetail = event.id)))
+                }
             }
         }
     }

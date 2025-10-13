@@ -42,7 +42,8 @@ sealed class Screen {
 
     @Serializable
     data class StadiumDetail(
-        val id: Int,
+        val detail: Int? = null,
+        val scheduleDetail: Int? = null
     ) : Screen()
 
     @Serializable

@@ -60,6 +60,8 @@ kotlin {
             implementation(libs.coil3.network.ktor)
 
             implementation(libs.accompanist.systemuicontroller) // latest as of 2025
+
+            implementation(libs.kotlinx.datetime)
 //            implementation(libs.hotpreview)
 //            implementation("androidx.core:core-ktx:1.17.0") // latest as of 2025
         }
